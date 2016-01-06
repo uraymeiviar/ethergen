@@ -3,6 +3,9 @@
 #include "sizetable.hpp"
 #include <fstream>
 #include <iostream>
+#include <stdio.h>
+
+std::map<uint64_t,std::shared_ptr<WorkGraph>> WorkGraph::cachedWorkGraph;
 
 void WorkGraph::computeCache()
 {
@@ -193,87 +196,64 @@ uint64_t WorkGraph::getDAGSize(uint64_t blockNumber)
     return dag_sizes[blockNumber / Block::EpochLength];
 }
 
-Bits<256> Block::createSeedHash(uint64_t blockNumber)
+std::shared_ptr<WorkGraph> WorkGraph::getWorkGraph(uint64_t blockNumber)
 {
-    uint64_t const epochs = blockNumber / Block::EpochLength;
-    Bits<256> seedHash;
-    for (uint64_t i = 0; i < epochs; ++i)
+    auto cached = WorkGraph::cachedWorkGraph.find(blockNumber);
+    if(cached == WorkGraph::cachedWorkGraph.end())
     {
-        SHA3_256(seedHash.ptr(), seedHash.ptr(), 32);
-    }
-    return seedHash;
-}
-
-Bits<256> Block::createSeedHash(uint64_t blockNumber, uint64_t prevBlockNumber, const Bits<256>& prevSeed)
-{
-    uint64_t const epochs = blockNumber / Block::EpochLength;
-    uint64_t const prevEpoch = prevBlockNumber / Block::EpochLength;
-    uint64_t const remainingEpoch = epochs - prevEpoch;
-    Bits<256> seedHash(prevSeed);
-    for (uint64_t i = 0; i < remainingEpoch; ++i)
-    {
-        SHA3_256(seedHash.ptr(), seedHash.ptr(), 32);
-    }
-    return seedHash;
-}
-
-const Bits<256> Block::getSeedHash() const
-{
-    return this->seedHash;
-}
-
-uint64_t Block::getBlockNumber() const
-{
-    return this->blockNumber;
-}
-
-uint64_t Block::getEpoch() const
-{
-    return this->blockNumber / Block::EpochLength;
-}
-
-Block::Block()
-{
-    this->blockNumber = 0;
-    this->seedHash = Block::createSeedHash(0);
-}
-
-Block::Block(const Block& ref)
-{
-    this->blockNumber = ref.blockNumber;
-    this->seedHash = ref.seedHash;
-}
-
-Block::Block(const Block& ref,uint64_t blockNumber)
-{
-    this->blockNumber = blockNumber;
-    if(ref.getEpoch() == this->getEpoch())
-    {
-        this->seedHash = ref.seedHash;
-    }
-    else if(this->getEpoch() > ref.getEpoch())
-    {
-        this->seedHash = Block::createSeedHash(blockNumber,ref.getBlockNumber(),ref.getSeedHash());
+        std::shared_ptr<WorkGraph> workgraph = std::make_shared<WorkGraph>(blockNumber);
+        WorkGraph::cachedWorkGraph[blockNumber] = workgraph;
+        return workgraph;
     }
     else
     {
-        this->seedHash = Block::createSeedHash(blockNumber);
+        return cached->second;
     }
 }
 
-Block::Block(uint64_t blockNumber)
+void WorkGraph::deleteWorkGraph(uint64_t blockNumber)
 {
-    this->blockNumber = blockNumber;
-    this->seedHash = Block::createSeedHash(blockNumber);
+    WorkGraph::cachedWorkGraph.erase(blockNumber);
 }
 
-Block::Block(uint64_t blockNumber,Bits<256> seedHash)
+void WorkGraph::deleteWorkGraph(uint64_t blockNumber,std::string dagFile, std::string dagCacheFile)
 {
-    this->blockNumber = blockNumber;
-    this->seedHash = seedHash;
+    WorkGraph::cachedWorkGraph.erase(blockNumber);
+    remove(dagFile.c_str());
+    remove(dagCacheFile.c_str());
 }
 
-bool Work::checkNonce(uint64_t nonce, WorkResult& result, const WorkGraph& graph)
+std::shared_ptr<WorkGraph> WorkGraph::getWorkGraph(uint64_t blockNumber, std::string dagFile, std::string dagCacheFile)
+{
+    auto cached = WorkGraph::cachedWorkGraph.find(blockNumber);
+    if(cached == WorkGraph::cachedWorkGraph.end())
+    {
+        std::shared_ptr<WorkGraph> workgraph = std::make_shared<WorkGraph>(blockNumber,dagFile,dagCacheFile);
+        WorkGraph::cachedWorkGraph[blockNumber] = workgraph;
+        return workgraph;
+    }
+    else
+    {
+        return cached->second;
+    }
+}
+
+WorkGraph::WorkGraph(uint64_t blockNumber,std::string dagFile,std::string dagCacheFile)
+: Block(blockNumber)
+{
+    if(!this->readDAGCacheFromFile(dagCacheFile))
+    {
+        this->computeCache();
+        this->writeDAGCacheToFile(dagCacheFile);
+    }
+    if(!this->readDAGFromFile(dagFile))
+    {
+        this->computeDAG();
+        this->writeDAGToFile(dagFile);
+    }
+}
+
+bool Work::checkNonce(uint64_t nonce, WorkResult& result, std::shared_ptr<const WorkGraph> graph)
 {
     std::array<Bytes<64>,3> smix;
     memcpy(smix[0].ptr(), this->headerHash.ptr(), 32);
@@ -286,7 +266,7 @@ bool Work::checkNonce(uint64_t nonce, WorkResult& result, const WorkGraph& graph
         mix[w] = smix[0].value32(w % 16);
     }
     
-    size_t numPages = graph.getDAGByteLength() / 128;
+    size_t numPages = graph->getDAGByteLength() / 128;
     
     for (uint32_t i = 0; i != 64; ++i)
     {
@@ -294,7 +274,7 @@ bool Work::checkNonce(uint64_t nonce, WorkResult& result, const WorkGraph& graph
         
         for (size_t n = 0; n != 2; ++n)
         {
-            const Bytes<64>* dagNode = &graph.getDAG()[2 * index + n];
+            const Bytes<64>* dagNode = &graph->getDAG()[2 * index + n];
             
             for (size_t w = 0; w != 16; ++w)
             {

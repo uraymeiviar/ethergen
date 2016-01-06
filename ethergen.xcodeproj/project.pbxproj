@@ -7,9 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		141BB6D81C3830CE004E0175 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 141BB6D71C3830CE004E0175 /* main.cpp */; };
-		141BB6EB1C3987BA004E0175 /* work.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 141BB6EA1C3987BA004E0175 /* work.cpp */; };
-		141BB6EE1C3A45DE004E0175 /* sha3.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 141BB6EC1C3A45DE004E0175 /* sha3.cpp */; };
+		14B185921C3DB689005D5C15 /* worker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14B1858C1C3DB689005D5C15 /* worker.cpp */; };
+		14B185931C3DB689005D5C15 /* work.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14B1858D1C3DB689005D5C15 /* work.cpp */; };
+		14B185941C3DB689005D5C15 /* block.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14B1858E1C3DB689005D5C15 /* block.cpp */; };
+		14B185951C3DB689005D5C15 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14B1858F1C3DB689005D5C15 /* main.cpp */; };
+		14B185961C3DB689005D5C15 /* cpuworker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14B185901C3DB689005D5C15 /* cpuworker.cpp */; };
+		14B185971C3DB689005D5C15 /* sha3.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14B185911C3DB689005D5C15 /* sha3.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -26,13 +29,21 @@
 
 /* Begin PBXFileReference section */
 		141BB6D41C3830CE004E0175 /* ethergen */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = ethergen; sourceTree = BUILT_PRODUCTS_DIR; };
-		141BB6D71C3830CE004E0175 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
-		141BB6E51C397D3B004E0175 /* work.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = work.hpp; sourceTree = "<group>"; };
-		141BB6EA1C3987BA004E0175 /* work.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = work.cpp; sourceTree = "<group>"; };
-		141BB6EC1C3A45DE004E0175 /* sha3.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sha3.cpp; sourceTree = "<group>"; };
-		141BB6ED1C3A45DE004E0175 /* sha3.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = sha3.hpp; sourceTree = "<group>"; };
-		141BB6EF1C3A5248004E0175 /* sizetable.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = sizetable.hpp; sourceTree = "<group>"; };
-		141BB6F01C3BEBC2004E0175 /* bits.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = bits.hpp; sourceTree = "<group>"; };
+		14B185771C3DB65E005D5C15 /* miner.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = miner.hpp; path = includes/miner.hpp; sourceTree = "<group>"; };
+		14B185781C3DB65E005D5C15 /* connection.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = connection.hpp; path = includes/connection.hpp; sourceTree = "<group>"; };
+		14B185791C3DB65E005D5C15 /* work.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = work.hpp; path = includes/work.hpp; sourceTree = "<group>"; };
+		14B1857A1C3DB65E005D5C15 /* worker.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = worker.hpp; path = includes/worker.hpp; sourceTree = "<group>"; };
+		14B1857B1C3DB65E005D5C15 /* block.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = block.hpp; path = includes/block.hpp; sourceTree = "<group>"; };
+		14B1857C1C3DB65E005D5C15 /* cpuworker.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = cpuworker.hpp; path = includes/cpuworker.hpp; sourceTree = "<group>"; };
+		14B1857D1C3DB65E005D5C15 /* bits.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = bits.hpp; path = includes/bits.hpp; sourceTree = "<group>"; };
+		14B1857E1C3DB65E005D5C15 /* sha3.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = sha3.hpp; path = includes/sha3.hpp; sourceTree = "<group>"; };
+		14B1857F1C3DB65E005D5C15 /* sizetable.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = sizetable.hpp; path = includes/sizetable.hpp; sourceTree = "<group>"; };
+		14B1858C1C3DB689005D5C15 /* worker.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = worker.cpp; path = ../src/worker.cpp; sourceTree = "<group>"; };
+		14B1858D1C3DB689005D5C15 /* work.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = work.cpp; path = ../src/work.cpp; sourceTree = "<group>"; };
+		14B1858E1C3DB689005D5C15 /* block.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = block.cpp; path = ../src/block.cpp; sourceTree = "<group>"; };
+		14B1858F1C3DB689005D5C15 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = main.cpp; path = ../src/main.cpp; sourceTree = "<group>"; };
+		14B185901C3DB689005D5C15 /* cpuworker.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = cpuworker.cpp; path = ../src/cpuworker.cpp; sourceTree = "<group>"; };
+		14B185911C3DB689005D5C15 /* sha3.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = sha3.cpp; path = ../src/sha3.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -49,7 +60,8 @@
 		141BB6CB1C3830CD004E0175 = {
 			isa = PBXGroup;
 			children = (
-				141BB6D61C3830CE004E0175 /* ethergen */,
+				14B185691C3DB200005D5C15 /* includes */,
+				141BB6D61C3830CE004E0175 /* src */,
 				141BB6D51C3830CE004E0175 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -62,18 +74,34 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		141BB6D61C3830CE004E0175 /* ethergen */ = {
+		141BB6D61C3830CE004E0175 /* src */ = {
 			isa = PBXGroup;
 			children = (
-				141BB6F01C3BEBC2004E0175 /* bits.hpp */,
-				141BB6EF1C3A5248004E0175 /* sizetable.hpp */,
-				141BB6EC1C3A45DE004E0175 /* sha3.cpp */,
-				141BB6ED1C3A45DE004E0175 /* sha3.hpp */,
-				141BB6D71C3830CE004E0175 /* main.cpp */,
-				141BB6E51C397D3B004E0175 /* work.hpp */,
-				141BB6EA1C3987BA004E0175 /* work.cpp */,
+				14B1858C1C3DB689005D5C15 /* worker.cpp */,
+				14B1858D1C3DB689005D5C15 /* work.cpp */,
+				14B1858E1C3DB689005D5C15 /* block.cpp */,
+				14B1858F1C3DB689005D5C15 /* main.cpp */,
+				14B185901C3DB689005D5C15 /* cpuworker.cpp */,
+				14B185911C3DB689005D5C15 /* sha3.cpp */,
 			);
+			name = src;
 			path = ethergen;
+			sourceTree = "<group>";
+		};
+		14B185691C3DB200005D5C15 /* includes */ = {
+			isa = PBXGroup;
+			children = (
+				14B185771C3DB65E005D5C15 /* miner.hpp */,
+				14B185781C3DB65E005D5C15 /* connection.hpp */,
+				14B185791C3DB65E005D5C15 /* work.hpp */,
+				14B1857A1C3DB65E005D5C15 /* worker.hpp */,
+				14B1857B1C3DB65E005D5C15 /* block.hpp */,
+				14B1857C1C3DB65E005D5C15 /* cpuworker.hpp */,
+				14B1857D1C3DB65E005D5C15 /* bits.hpp */,
+				14B1857E1C3DB65E005D5C15 /* sha3.hpp */,
+				14B1857F1C3DB65E005D5C15 /* sizetable.hpp */,
+			);
+			name = includes;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -133,9 +161,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				141BB6D81C3830CE004E0175 /* main.cpp in Sources */,
-				141BB6EE1C3A45DE004E0175 /* sha3.cpp in Sources */,
-				141BB6EB1C3987BA004E0175 /* work.cpp in Sources */,
+				14B185931C3DB689005D5C15 /* work.cpp in Sources */,
+				14B185921C3DB689005D5C15 /* worker.cpp in Sources */,
+				14B185971C3DB689005D5C15 /* sha3.cpp in Sources */,
+				14B185951C3DB689005D5C15 /* main.cpp in Sources */,
+				14B185941C3DB689005D5C15 /* block.cpp in Sources */,
+				14B185961C3DB689005D5C15 /* cpuworker.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

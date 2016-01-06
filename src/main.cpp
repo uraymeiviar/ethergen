@@ -46,12 +46,12 @@ void calcDag(int argc, const char* argv[])
     else
     {
         uint64_t blockNumber = strtoull(argv[2],nullptr,10);
-        WorkGraph workGraph(blockNumber);
-        std::string lightPath = "DAG-Light-"+std::to_string(workGraph.getEpoch())+"-"+workGraph.getSeedHash().toString();
-        std::string fullPath = "DAG-"+std::to_string(workGraph.getEpoch())+"-"+workGraph.getSeedHash().toString();
-
-        workGraph.writeDAGCacheToFile(lightPath);
-        workGraph.writeDAGToFile(fullPath);
+        uint64_t epoch = Block::blockNumToEpoch(blockNumber);
+        Bits<256> seedHash = Block::createSeedHash(blockNumber);
+        
+        std::string lightPath = "DAG-Light-"+std::to_string(epoch)+"-"+seedHash.toString();
+        std::string fullPath = "DAG-"+std::to_string(epoch)+"-"+seedHash.toString();
+        std::shared_ptr<WorkGraph> workGraph = WorkGraph::getWorkGraph(blockNumber,fullPath,lightPath);
     }
 }
 
@@ -64,7 +64,9 @@ void hash(int argc, const char* argv[])
     else
     {
         uint64_t blockNumber = strtoull(argv[2],nullptr,10);
+        uint64_t epoch = Block::blockNumToEpoch(blockNumber);
         uint64_t nonce = strtoull(argv[3],nullptr,10);
+        Bits<256> seedHash = Block::createSeedHash(blockNumber);
         std::string headerHash = std::string(argv[4]);
         std::string target = "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
         
@@ -73,19 +75,9 @@ void hash(int argc, const char* argv[])
             target = std::string(argv[5]);
         }
         
-        WorkGraph workGraph(blockNumber);
-        std::string lightPath = "DAG-Light-"+std::to_string(workGraph.getEpoch())+"-"+workGraph.getSeedHash().toString();
-        std::string fullPath = "DAG-"+std::to_string(workGraph.getEpoch())+"-"+workGraph.getSeedHash().toString();
-        
-        if(!workGraph.readDAGCacheFromFile(lightPath))
-        {
-            workGraph.writeDAGCacheToFile(lightPath);
-        }
-        
-        if(!workGraph.readDAGFromFile(fullPath))
-        {
-            workGraph.writeDAGToFile(fullPath);
-        }
+        std::string lightPath = "DAG-Light-"+std::to_string(epoch)+"-"+seedHash.toString();
+        std::string fullPath = "DAG-"+std::to_string(epoch)+"-"+seedHash.toString();
+        std::shared_ptr<WorkGraph> workGraph = WorkGraph::getWorkGraph(blockNumber, fullPath, lightPath);
         
         Work work(blockNumber);
         work.headerHash.fromString(headerHash);
@@ -95,11 +87,11 @@ void hash(int argc, const char* argv[])
         bool targetResult = work.checkNonce(nonce,result,workGraph);
         
         std::cout << "Block Number " << std::to_string(blockNumber) << std::endl;
-        std::cout << "       Epoch " << std::to_string(workGraph.getEpoch()) << std::endl;
-        std::cout << "   Seed Hash " << workGraph.getSeedHash().toString() << std::endl;
+        std::cout << "       Epoch " << std::to_string(workGraph->getEpoch()) << std::endl;
+        std::cout << "   Seed Hash " << workGraph->getSeedHash().toString() << std::endl;
         std::cout << " Header Hash " << work.headerHash.toString() << std::endl;
-        std::cout << "   Node Size " << std::to_string(workGraph.getDAGCacheByteLength()) << std::endl;
-        std::cout << "    DAG Size " << std::to_string(workGraph.getDAGByteLength()) << std::endl;
+        std::cout << "   Node Size " << std::to_string(workGraph->getDAGCacheByteLength()) << std::endl;
+        std::cout << "    DAG Size " << std::to_string(workGraph->getDAGByteLength()) << std::endl;
         std::cout << "    Mix Hash " << result.mixHash.toString() << std::endl;
         std::cout << "       Nonce " << std::to_string(result.nonce) << std::endl;
         std::cout << " Target Hash " << work.target.toString() << std::endl;
