@@ -29,21 +29,21 @@
 
 /* Begin PBXFileReference section */
 		141BB6D41C3830CE004E0175 /* ethergen */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = ethergen; sourceTree = BUILT_PRODUCTS_DIR; };
-		14B185771C3DB65E005D5C15 /* miner.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = miner.hpp; path = includes/miner.hpp; sourceTree = "<group>"; };
-		14B185781C3DB65E005D5C15 /* connection.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = connection.hpp; path = includes/connection.hpp; sourceTree = "<group>"; };
-		14B185791C3DB65E005D5C15 /* work.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = work.hpp; path = includes/work.hpp; sourceTree = "<group>"; };
-		14B1857A1C3DB65E005D5C15 /* worker.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = worker.hpp; path = includes/worker.hpp; sourceTree = "<group>"; };
-		14B1857B1C3DB65E005D5C15 /* block.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = block.hpp; path = includes/block.hpp; sourceTree = "<group>"; };
-		14B1857C1C3DB65E005D5C15 /* cpuworker.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = cpuworker.hpp; path = includes/cpuworker.hpp; sourceTree = "<group>"; };
-		14B1857D1C3DB65E005D5C15 /* bits.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = bits.hpp; path = includes/bits.hpp; sourceTree = "<group>"; };
-		14B1857E1C3DB65E005D5C15 /* sha3.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = sha3.hpp; path = includes/sha3.hpp; sourceTree = "<group>"; };
-		14B1857F1C3DB65E005D5C15 /* sizetable.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = sizetable.hpp; path = includes/sizetable.hpp; sourceTree = "<group>"; };
-		14B1858C1C3DB689005D5C15 /* worker.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = worker.cpp; path = ../src/worker.cpp; sourceTree = "<group>"; };
-		14B1858D1C3DB689005D5C15 /* work.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = work.cpp; path = ../src/work.cpp; sourceTree = "<group>"; };
-		14B1858E1C3DB689005D5C15 /* block.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = block.cpp; path = ../src/block.cpp; sourceTree = "<group>"; };
-		14B1858F1C3DB689005D5C15 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = main.cpp; path = ../src/main.cpp; sourceTree = "<group>"; };
-		14B185901C3DB689005D5C15 /* cpuworker.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = cpuworker.cpp; path = ../src/cpuworker.cpp; sourceTree = "<group>"; };
-		14B185911C3DB689005D5C15 /* sha3.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = sha3.cpp; path = ../src/sha3.cpp; sourceTree = "<group>"; };
+		14B185771C3DB65E005D5C15 /* miner.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = miner.hpp; path = includes/miner.hpp; sourceTree = SOURCE_ROOT; };
+		14B185781C3DB65E005D5C15 /* connection.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = connection.hpp; path = includes/connection.hpp; sourceTree = SOURCE_ROOT; };
+		14B185791C3DB65E005D5C15 /* work.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = work.hpp; path = includes/work.hpp; sourceTree = SOURCE_ROOT; };
+		14B1857A1C3DB65E005D5C15 /* worker.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = worker.hpp; path = includes/worker.hpp; sourceTree = SOURCE_ROOT; };
+		14B1857B1C3DB65E005D5C15 /* block.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = block.hpp; path = includes/block.hpp; sourceTree = SOURCE_ROOT; };
+		14B1857C1C3DB65E005D5C15 /* cpuworker.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = cpuworker.hpp; path = includes/cpuworker.hpp; sourceTree = SOURCE_ROOT; };
+		14B1857D1C3DB65E005D5C15 /* bits.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = bits.hpp; path = includes/bits.hpp; sourceTree = SOURCE_ROOT; };
+		14B1857E1C3DB65E005D5C15 /* sha3.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = sha3.hpp; path = includes/sha3.hpp; sourceTree = SOURCE_ROOT; };
+		14B1857F1C3DB65E005D5C15 /* sizetable.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = sizetable.hpp; path = includes/sizetable.hpp; sourceTree = SOURCE_ROOT; };
+		14B1858C1C3DB689005D5C15 /* worker.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = worker.cpp; path = src/worker.cpp; sourceTree = SOURCE_ROOT; };
+		14B1858D1C3DB689005D5C15 /* work.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = work.cpp; path = src/work.cpp; sourceTree = SOURCE_ROOT; };
+		14B1858E1C3DB689005D5C15 /* block.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = block.cpp; path = src/block.cpp; sourceTree = SOURCE_ROOT; };
+		14B1858F1C3DB689005D5C15 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = main.cpp; path = src/main.cpp; sourceTree = SOURCE_ROOT; };
+		14B185901C3DB689005D5C15 /* cpuworker.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = cpuworker.cpp; path = src/cpuworker.cpp; sourceTree = SOURCE_ROOT; };
+		14B185911C3DB689005D5C15 /* sha3.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = sha3.cpp; path = src/sha3.cpp; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
