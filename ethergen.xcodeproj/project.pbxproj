@@ -1,0 +1,278 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		141BB6D81C3830CE004E0175 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 141BB6D71C3830CE004E0175 /* main.cpp */; };
+		141BB6EB1C3987BA004E0175 /* work.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 141BB6EA1C3987BA004E0175 /* work.cpp */; };
+		141BB6EE1C3A45DE004E0175 /* sha3.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 141BB6EC1C3A45DE004E0175 /* sha3.cpp */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		141BB6D21C3830CE004E0175 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		141BB6D41C3830CE004E0175 /* ethergen */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = ethergen; sourceTree = BUILT_PRODUCTS_DIR; };
+		141BB6D71C3830CE004E0175 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		141BB6E51C397D3B004E0175 /* work.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = work.hpp; sourceTree = "<group>"; };
+		141BB6EA1C3987BA004E0175 /* work.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = work.cpp; sourceTree = "<group>"; };
+		141BB6EC1C3A45DE004E0175 /* sha3.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sha3.cpp; sourceTree = "<group>"; };
+		141BB6ED1C3A45DE004E0175 /* sha3.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = sha3.hpp; sourceTree = "<group>"; };
+		141BB6EF1C3A5248004E0175 /* sizetable.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = sizetable.hpp; sourceTree = "<group>"; };
+		141BB6F01C3BEBC2004E0175 /* bits.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = bits.hpp; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		141BB6D11C3830CE004E0175 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		141BB6CB1C3830CD004E0175 = {
+			isa = PBXGroup;
+			children = (
+				141BB6D61C3830CE004E0175 /* ethergen */,
+				141BB6D51C3830CE004E0175 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		141BB6D51C3830CE004E0175 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				141BB6D41C3830CE004E0175 /* ethergen */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		141BB6D61C3830CE004E0175 /* ethergen */ = {
+			isa = PBXGroup;
+			children = (
+				141BB6F01C3BEBC2004E0175 /* bits.hpp */,
+				141BB6EF1C3A5248004E0175 /* sizetable.hpp */,
+				141BB6EC1C3A45DE004E0175 /* sha3.cpp */,
+				141BB6ED1C3A45DE004E0175 /* sha3.hpp */,
+				141BB6D71C3830CE004E0175 /* main.cpp */,
+				141BB6E51C397D3B004E0175 /* work.hpp */,
+				141BB6EA1C3987BA004E0175 /* work.cpp */,
+			);
+			path = ethergen;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		141BB6D31C3830CE004E0175 /* ethergen */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 141BB6DB1C3830CE004E0175 /* Build configuration list for PBXNativeTarget "ethergen" */;
+			buildPhases = (
+				141BB6D01C3830CE004E0175 /* Sources */,
+				141BB6D11C3830CE004E0175 /* Frameworks */,
+				141BB6D21C3830CE004E0175 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = ethergen;
+			productName = ethergen;
+			productReference = 141BB6D41C3830CE004E0175 /* ethergen */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		141BB6CC1C3830CD004E0175 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0720;
+				ORGANIZATIONNAME = etherlink;
+				TargetAttributes = {
+					141BB6D31C3830CE004E0175 = {
+						CreatedOnToolsVersion = 7.2;
+						DevelopmentTeam = 5HCNH7CB5Q;
+					};
+				};
+			};
+			buildConfigurationList = 141BB6CF1C3830CD004E0175 /* Build configuration list for PBXProject "ethergen" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 141BB6CB1C3830CD004E0175;
+			productRefGroup = 141BB6D51C3830CE004E0175 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				141BB6D31C3830CE004E0175 /* ethergen */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		141BB6D01C3830CE004E0175 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				141BB6D81C3830CE004E0175 /* main.cpp in Sources */,
+				141BB6EE1C3A45DE004E0175 /* sha3.cpp in Sources */,
+				141BB6EB1C3987BA004E0175 /* work.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		141BB6D91C3830CE004E0175 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "c++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = c11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				VALID_ARCHS = x86_64;
+			};
+			name = Debug;
+		};
+		141BB6DA1C3830CE004E0175 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "c++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_DEBUG_INFORMATION_LEVEL = "line-tables-only";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CLANG_X86_VECTOR_INSTRUCTIONS = avx;
+				CODE_SIGN_ENTITLEMENTS = "";
+				CODE_SIGN_IDENTITY = "Developer ID Application";
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = c11;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = fast;
+				GCC_UNROLL_LOOPS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LLVM_LTO = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				VALID_ARCHS = x86_64;
+			};
+			name = Release;
+		};
+		141BB6DC1C3830CE004E0175 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Mac Developer";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+			};
+			name = Debug;
+		};
+		141BB6DD1C3830CE004E0175 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Mac Developer";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		141BB6CF1C3830CD004E0175 /* Build configuration list for PBXProject "ethergen" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				141BB6D91C3830CE004E0175 /* Debug */,
+				141BB6DA1C3830CE004E0175 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		141BB6DB1C3830CE004E0175 /* Build configuration list for PBXNativeTarget "ethergen" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				141BB6DC1C3830CE004E0175 /* Debug */,
+				141BB6DD1C3830CE004E0175 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 141BB6CC1C3830CD004E0175 /* Project object */;
+}
