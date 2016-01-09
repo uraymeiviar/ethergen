@@ -13,6 +13,7 @@ public:
 class CpuWorker : public Worker
 {
 public:
+    void setWork(const Work& work, uint64_t startNonce ) override;
     static CpuWorkerFactory& getFactory();
     virtual void setRun(bool run) override;
     CpuWorker();
@@ -27,6 +28,9 @@ protected:
     
     std::mutex workerPauseMutex;
     std::condition_variable workerPausedSignal;
+    
+    std::array<Bytes<64>,3> smix;
+    size_t numPages;
 };
 
 #endif

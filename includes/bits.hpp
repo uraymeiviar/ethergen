@@ -59,8 +59,31 @@ protected:
 public:
     Bits(){ this->reset(); };
     Bits(const Bits<T>& ref) { this->bytes = ref.bytes; }
-    uint8_t* ptr(){ return (uint8_t*)(this->bytes.data()); }
-    const uint8_t* ptr() const { return (const uint8_t*)(this->bytes.data()); }
+    
+    uint8_t* ptr(size_t offset = 0) {return ((uint8_t*)this->bytes.data())+offset;};
+    uint16_t* ptr16(size_t offset = 0) {return ((uint16_t*)this->bytes.data())+offset;};
+    uint32_t* ptr32(size_t offset = 0) {return ((uint32_t*)this->bytes.data())+offset;};
+    uint64_t* ptr64(size_t offset = 0) {return ((uint64_t*)this->bytes.data())+offset;};
+    
+    const uint8_t* ptr(size_t offset = 0) const {return ((const uint8_t*)this->bytes.data())+offset;};
+    const uint16_t* ptr16(size_t offset = 0) const {return ((const uint16_t*)this->bytes.data())+offset;};
+    const uint32_t* ptr32(size_t offset = 0) const {return ((const uint32_t*)this->bytes.data())+offset;};
+    const uint64_t* ptr64(size_t offset = 0) const {return ((const uint64_t*)this->bytes.data())+offset;};
+    
+    uint16_t value16(size_t index) const { return ((uint16_t*)this->ptr())[index]; };
+    uint32_t value32(size_t index) const { return ((uint32_t*)this->ptr())[index]; };
+    uint64_t value64(size_t index) const { return ((uint64_t*)this->ptr())[index]; };
+    template <typename V> V value(size_t index){
+        return ((V*)this->ptr())[index];
+    }
+    
+    void value16(size_t index, uint16_t value) { ((uint16_t*)this->ptr())[index] = value; };
+    void value32(size_t index, uint32_t value) { ((uint32_t*)this->ptr())[index] = value; };
+    void value64(size_t index, uint64_t value) { ((uint64_t*)this->ptr())[index] = value; };
+    template <typename V> void value(size_t index, V value){
+        ((V*)this->ptr())[index] = value;
+    }
+    
     static const size_t bitsSize(){ return T; };
     static const size_t byteSize(){ return T/8; };
     void reset(){ std::fill( std::begin( this->bytes ), std::end( this->bytes ), 0 ); };

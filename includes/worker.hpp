@@ -10,7 +10,7 @@
 class Worker
 {
 public:
-    void setWork(const Work& work, uint64_t startNonce = 0);
+    virtual void setWork(const Work& work, uint64_t startNonce = 0);
     const Work& getCurrentWork() const;
     virtual void setRun(bool run);
     virtual bool isRunning() const;
@@ -19,12 +19,12 @@ public:
     Worker();
     virtual ~Worker();
     std::string name;
-    std::function<void(const Worker&, const WorkResult&)> onValidResult;
+    std::function<void(const Worker&, WorkResult)> onValidResult;
 protected:
     bool running;
-    uint64_t currentNonce;
     uint64_t currentHashrate;
     Work work;
+    WorkResult workResult;
     std::shared_ptr<WorkGraph> workGraph;
 };
 
