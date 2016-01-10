@@ -116,6 +116,15 @@ void gen(int argc, const char* argv[])
         //miner.addWorker(CpuWorker::getFactory(),PoolConnection::getFactory(),"cpu","http://sg.node.etherlink.co/<account>/<worker>");
         miner.addWorker(CpuWorker::getFactory(),PoolConnection::getFactory(),"cpu","http://sg.node.etherlink.co:8545");
         miner.setRun(true);
+        uint64_t lastNonce = 0;
+        while(true)
+        {
+            std::this_thread::sleep_for(std::chrono::seconds(1));
+            uint64_t currentNonce = miner.getWorker(0)->getCurrentNonce();
+            uint64_t noncePerSec = currentNonce-lastNonce;
+            lastNonce = currentNonce;
+            std::cout << std::to_string(currentNonce) << " " << noncePerSec << "nonces/sec" << std::endl;
+        }
     }
 }
 

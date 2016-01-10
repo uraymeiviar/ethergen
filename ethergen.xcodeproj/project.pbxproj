@@ -17,6 +17,7 @@
 		14C4A9501C4150CF001BED47 /* miner.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14C4A94F1C4150CF001BED47 /* miner.cpp */; };
 		14C4A96C1C4291D7001BED47 /* poolconnection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14C4A96B1C4291D7001BED47 /* poolconnection.cpp */; };
 		14C4A96F1C42A471001BED47 /* httpclient.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14C4A96E1C42A471001BED47 /* httpclient.cpp */; };
+		14C4A9731C42F9C3001BED47 /* workgraph.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14C4A9721C42F9C3001BED47 /* workgraph.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -55,6 +56,8 @@
 		14C4A96D1C4291F4001BED47 /* poolconnection.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = poolconnection.h; path = includes/poolconnection.h; sourceTree = "<group>"; };
 		14C4A96E1C42A471001BED47 /* httpclient.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = httpclient.cpp; path = src/httpclient.cpp; sourceTree = SOURCE_ROOT; };
 		14C4A9701C42A483001BED47 /* httpclient.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = httpclient.h; path = includes/httpclient.h; sourceTree = SOURCE_ROOT; };
+		14C4A9711C42F9B1001BED47 /* workgraph.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = workgraph.hpp; path = includes/workgraph.hpp; sourceTree = "<group>"; };
+		14C4A9721C42F9C3001BED47 /* workgraph.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = workgraph.cpp; path = src/workgraph.cpp; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -98,6 +101,7 @@
 				14C4A94F1C4150CF001BED47 /* miner.cpp */,
 				14C4A96B1C4291D7001BED47 /* poolconnection.cpp */,
 				14C4A96E1C42A471001BED47 /* httpclient.cpp */,
+				14C4A9721C42F9C3001BED47 /* workgraph.cpp */,
 			);
 			name = src;
 			path = ethergen;
@@ -118,6 +122,7 @@
 				14B1857F1C3DB65E005D5C15 /* sizetable.hpp */,
 				14C4A96D1C4291F4001BED47 /* poolconnection.h */,
 				14C4A9701C42A483001BED47 /* httpclient.h */,
+				14C4A9711C42F9B1001BED47 /* workgraph.hpp */,
 			);
 			name = includes;
 			sourceTree = "<group>";
@@ -184,6 +189,7 @@
 				14B185921C3DB689005D5C15 /* worker.cpp in Sources */,
 				14B185971C3DB689005D5C15 /* sha3.cpp in Sources */,
 				14B185951C3DB689005D5C15 /* main.cpp in Sources */,
+				14C4A9731C42F9C3001BED47 /* workgraph.cpp in Sources */,
 				14B185941C3DB689005D5C15 /* block.cpp in Sources */,
 				14C4A9501C4150CF001BED47 /* miner.cpp in Sources */,
 				14C4A94E1C414670001BED47 /* connection.cpp in Sources */,

@@ -9,7 +9,7 @@
 class Connection
 {
 public:
-    void setWork(const Work& work);
+    void setWork(const Work& work, uint64_t startNonce);
     virtual void requestNewWork() = 0;
     virtual uint64_t getBlockNumber() = 0;
     virtual void submitResult(const WorkResult& result) = 0;

@@ -10,11 +10,11 @@ std::string Connection::getEndPoint() const
     return this->endPoint;
 }
 
-void Connection::setWork(const Work& work)
+void Connection::setWork(const Work& work, uint64_t startNonce)
 {
     if(this->onNewWork)
     {
-        this->onNewWork(*this,work);
+        this->onNewWork(*this,work, startNonce);
     }
 }
 

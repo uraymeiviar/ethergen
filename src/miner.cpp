@@ -30,6 +30,7 @@ void Miner::setRun(bool run)
         {
             for(size_t i=0 ; i<this->workers.size() ; i++)
             {
+                this->workers.at(i).second->onNewWork = std::bind(&Miner::eventOnInitWork,this,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3,this->workers.at(i).first.get());
                 this->workers.at(i).second->requestNewWork();
                 this->workers.at(i).first->setRun(run);
             }
@@ -111,6 +112,13 @@ void Miner::addWorker(WorkerFactory& workerFactory, ConnectionFactory& connectio
 void Miner::eventOnNewWork(Connection& connection, const Work& work, uint64_t startNonce,Worker* worker)
 {
     worker->setWork(work,startNonce);
+}
+
+void Miner::eventOnInitWork(Connection& connection, const Work& work, uint64_t startNonce,Worker* worker)
+{
+    connection.onNewWork = std::bind(&Miner::eventOnNewWork,this,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3,worker);
+    worker->setWork(work,startNonce);
+    worker->setRun(this->running);
 }
 
 void Miner::eventWorkResult(const Worker& worker, WorkResult result, Connection* connection)

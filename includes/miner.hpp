@@ -29,6 +29,7 @@ protected:
     Bits<160> accountId;
     std::vector<std::pair<std::unique_ptr<Worker>,std::unique_ptr<Connection>>> workers;
     void eventOnNewWork(Connection& connection, const Work& work, uint64_t startNonce,Worker* worker);
+    void eventOnInitWork(Connection& connection, const Work& work, uint64_t startNonce,Worker* worker);
     void eventWorkResult(const Worker& worker, WorkResult result, Connection* connection);
 };
 
