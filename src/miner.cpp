@@ -23,10 +23,24 @@ bool Miner::isRunning() const
 
 void Miner::setRun(bool run)
 {
-    this->running = run;
-    for(size_t i=0 ; i<this->workers.size() ; i++)
+    if(this->running != run)
     {
-        this->workers.at(i).first->setRun(run);
+        this->running = run;
+        if(run)
+        {
+            for(size_t i=0 ; i<this->workers.size() ; i++)
+            {
+                this->workers.at(i).second->requestNewWork();
+                this->workers.at(i).first->setRun(run);
+            }
+        }
+        else
+        {
+            for(size_t i=0 ; i<this->workers.size() ; i++)
+            {
+                this->workers.at(i).first->setRun(run);
+            }
+        }
     }
 }
 
@@ -78,12 +92,12 @@ uint64_t Miner::getCurrentHashrate() const
     return hashrate;
 }
 
-void Miner::addWorker(WorkerFactory& workerFactory, ConnectionFactory& connectionFactory, std::string name)
+void Miner::addWorker(WorkerFactory& workerFactory, ConnectionFactory& connectionFactory, std::string name, std::string endpoint)
 {
     std::unique_ptr<Worker> worker = workerFactory.create(name);
-    std::unique_ptr<Connection> connection = connectionFactory.create(this->accountId, name);
+    std::unique_ptr<Connection> connection = connectionFactory.create(this->accountId, name, endpoint);
 
-    connection->onNewWork = std::bind(&Miner::eventOnNewWork,this,std::placeholders::_1,std::placeholders::_2,worker.get());
+    connection->onNewWork = std::bind(&Miner::eventOnNewWork,this,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3,worker.get());
     worker->onValidResult = std::bind(&Miner::eventWorkResult,this, std::placeholders::_1,
                                       std::placeholders::_2,connection.get());
     if(this->running)
@@ -94,9 +108,9 @@ void Miner::addWorker(WorkerFactory& workerFactory, ConnectionFactory& connectio
     this->workers.push_back(std::make_pair(std::move(worker),std::move(connection)));
 }
 
-void Miner::eventOnNewWork(Connection& connection, const Work& work, Worker* worker)
+void Miner::eventOnNewWork(Connection& connection, const Work& work, uint64_t startNonce,Worker* worker)
 {
-    worker->setWork(work);
+    worker->setWork(work,startNonce);
 }
 
 void Miner::eventWorkResult(const Worker& worker, WorkResult result, Connection* connection)

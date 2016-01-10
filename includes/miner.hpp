@@ -15,7 +15,7 @@ class Miner
 public:
     Miner(Bits<160> accountId);
     virtual ~Miner();
-    void addWorker(WorkerFactory& workerFactory, ConnectionFactory& connectionFactory, std::string name);
+    void addWorker(WorkerFactory& workerFactory, ConnectionFactory& connectionFactory, std::string name, std::string endpoint);
     size_t countWorker() const;
     const Worker* getWorker(size_t index) const;
     const Connection* getWorkerConnection(size_t index) const;
@@ -28,7 +28,7 @@ protected:
     bool running;
     Bits<160> accountId;
     std::vector<std::pair<std::unique_ptr<Worker>,std::unique_ptr<Connection>>> workers;
-    void eventOnNewWork(Connection& connection, const Work& work, Worker* worker);
+    void eventOnNewWork(Connection& connection, const Work& work, uint64_t startNonce,Worker* worker);
     void eventWorkResult(const Worker& worker, WorkResult result, Connection* connection);
 };
 

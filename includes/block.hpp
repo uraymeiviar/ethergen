@@ -23,9 +23,10 @@ public:
     static uint64_t blockNumToEpoch(uint64_t blockNumber);
     static Bits<256> createSeedHash(uint64_t blockNumber);
     static Bits<256> createSeedHash(uint64_t blockNumber, uint64_t prevBlockNumber, const Bits<256>& prevSeed);
-protected:
+    
     Bits<256> seedHash;
     uint64_t blockNumber;
+protected:
 };
 
 #endif /* block_h */

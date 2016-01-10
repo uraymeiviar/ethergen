@@ -59,6 +59,7 @@ protected:
 public:
     Bits(){ this->reset(); };
     Bits(const Bits<T>& ref) { this->bytes = ref.bytes; }
+    Bits(std::string hexString){ this->fromString(hexString); }
     
     uint8_t* ptr(size_t offset = 0) {return ((uint8_t*)this->bytes.data())+offset;};
     uint16_t* ptr16(size_t offset = 0) {return ((uint16_t*)this->bytes.data())+offset;};
@@ -134,6 +135,21 @@ public:
             }
         }
         return result;
+    }
+    bool operator ==(const Bits<T>& rhs)
+    {
+        for(size_t i=0 ; i<this->bytes.size() ; i++)
+        {
+            if(this->bytes[i] != rhs.bytes[i])
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+    bool operator !=(const Bits<T>& rhs)
+    {
+        return !this->operator==(rhs);
     }
 };
 

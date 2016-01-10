@@ -11,6 +11,7 @@ class Connection
 public:
     void setWork(const Work& work);
     virtual void requestNewWork() = 0;
+    virtual uint64_t getBlockNumber() = 0;
     virtual void submitResult(const WorkResult& result) = 0;
     virtual void setEndPoint(std::string endPoint);
     virtual void setAccountId(const Bits<160>& account);
@@ -18,7 +19,7 @@ public:
     virtual const Bits<160>& getAccountId() const;
     virtual std::string getWorkerName() const;
     std::string getEndPoint() const;
-    std::function<void(Connection&,const Work&)> onNewWork;
+    std::function<void(Connection&,const Work&, uint64_t startNonce)> onNewWork;
     virtual ~Connection();
 protected:
     std::string endPoint;
@@ -29,7 +30,7 @@ protected:
 class ConnectionFactory
 {
 public:
-    virtual std::unique_ptr<Connection> create(const Bits<160>& account, std::string workerName) = 0;
+    virtual std::unique_ptr<Connection> create(const Bits<160>& account, std::string workerName, std::string endpoint) = 0;
 };
 
 #endif /* connection_h */

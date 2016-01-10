@@ -2,6 +2,7 @@
 #define httpclient_h
 #include <string>
 #include <netinet/in.h>
+#include <map>
 
 class HTTPEndpoint
 {
@@ -12,8 +13,7 @@ public:
     std::string path;
     uint16_t port;
     bool getIPEndpoint(struct sockaddr_in& ipEndPoint) const;
-protected:
-    struct sockaddr_in ipEndpoint;
+    static std::map<std::string,uint32_t> hostnameCache;
 };
 
 class HTTPClient

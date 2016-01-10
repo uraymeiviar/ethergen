@@ -2,6 +2,9 @@
 #include <string>
 #include <algorithm>
 #include "work.hpp"
+#include "miner.hpp"
+#include "cpuworker.hpp"
+#include "poolconnection.h"
 
 std::string version = "0.1";
 
@@ -14,7 +17,7 @@ void printUsage(const char* cmd)
     std::cout << "     calc-dag        <block-number>" << std::endl;
     std::cout << "     hash            <block-number> <nonce> <headerhash> [target]" << std::endl;
     std::cout << "     benchmark       <cpu|gpu> <threads>" << std::endl;
-    std::cout << "     gen             <cpu|gpu> <threads>" << std::endl;
+    std::cout << "     gen             <config-file>" << std::endl;
     std::cout << "     help" << std::endl;
     std::cout << std::endl;
 }
@@ -100,6 +103,22 @@ void hash(int argc, const char* argv[])
     }
 }
 
+void gen(int argc, const char* argv[])
+{
+    if(argc < 3)
+    {
+        printUsage(argv[0]);
+    }
+    else
+    {
+        Bits<160> accountId("0xb3dcbf914ad920af9aee3ffcd642ec18f0fb80b3");
+        Miner miner(accountId);
+        //miner.addWorker(CpuWorker::getFactory(),PoolConnection::getFactory(),"cpu","http://sg.node.etherlink.co/<account>/<worker>");
+        miner.addWorker(CpuWorker::getFactory(),PoolConnection::getFactory(),"cpu","http://sg.node.etherlink.co:8545");
+        miner.setRun(true);
+    }
+}
+
 int main(int argc, const char * argv[])
 {
     if(argc < 2)
@@ -125,6 +144,10 @@ int main(int argc, const char * argv[])
         else if(mode == "hash")
         {
             hash(argc,argv);
+        }
+        else if(mode == "gen")
+        {
+            gen(argc,argv);
         }
         else
         {
