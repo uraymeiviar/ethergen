@@ -4,24 +4,26 @@
 #include <functional>
 #include <string>
 #include "bits.hpp"
+#include "work.hpp"
 
 class Connection
 {
 public:
-    void setWork(const Work& work, uint64_t startNonce = 0);
-    virtual void requestNewWork() const = 0;
+    void setWork(const Work& work);
+    virtual void requestNewWork() = 0;
     virtual void submitResult(const WorkResult& result) = 0;
-    virtual void setEndPoint(std::string endPoint) = 0;
-    virtual void connect() = 0;
-    virtual void disconnect() = 0;
+    virtual void setEndPoint(std::string endPoint);
     virtual void setAccountId(const Bits<160>& account);
     virtual void setWorkerName(std::string workerName);
+    virtual const Bits<160>& getAccountId() const;
+    virtual std::string getWorkerName() const;
     std::string getEndPoint() const;
     std::function<void(Connection&,const Work&)> onNewWork;
-    std::function<void(Connection&)> onConnected;
-    std::function<void(Connection&)> onDisconnected;
+    virtual ~Connection();
 protected:
     std::string endPoint;
+    std::string workerName;
+    Bits<160> accountId;
 };
 
 class ConnectionFactory

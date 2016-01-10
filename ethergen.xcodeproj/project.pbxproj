@@ -13,6 +13,10 @@
 		14B185951C3DB689005D5C15 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14B1858F1C3DB689005D5C15 /* main.cpp */; };
 		14B185961C3DB689005D5C15 /* cpuworker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14B185901C3DB689005D5C15 /* cpuworker.cpp */; };
 		14B185971C3DB689005D5C15 /* sha3.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14B185911C3DB689005D5C15 /* sha3.cpp */; };
+		14C4A94E1C414670001BED47 /* connection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14C4A94D1C414670001BED47 /* connection.cpp */; };
+		14C4A9501C4150CF001BED47 /* miner.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14C4A94F1C4150CF001BED47 /* miner.cpp */; };
+		14C4A96C1C4291D7001BED47 /* poolconnection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14C4A96B1C4291D7001BED47 /* poolconnection.cpp */; };
+		14C4A96F1C42A471001BED47 /* httpclient.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14C4A96E1C42A471001BED47 /* httpclient.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -44,6 +48,13 @@
 		14B1858F1C3DB689005D5C15 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = main.cpp; path = src/main.cpp; sourceTree = SOURCE_ROOT; };
 		14B185901C3DB689005D5C15 /* cpuworker.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = cpuworker.cpp; path = src/cpuworker.cpp; sourceTree = SOURCE_ROOT; };
 		14B185911C3DB689005D5C15 /* sha3.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = sha3.cpp; path = src/sha3.cpp; sourceTree = SOURCE_ROOT; };
+		14C4A94C1C4141C0001BED47 /* rapidjson */ = {isa = PBXFileReference; lastKnownFileType = folder; name = rapidjson; path = includes/rapidjson; sourceTree = "<group>"; };
+		14C4A94D1C414670001BED47 /* connection.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = connection.cpp; path = src/connection.cpp; sourceTree = SOURCE_ROOT; };
+		14C4A94F1C4150CF001BED47 /* miner.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = miner.cpp; path = src/miner.cpp; sourceTree = SOURCE_ROOT; };
+		14C4A96B1C4291D7001BED47 /* poolconnection.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = poolconnection.cpp; path = src/poolconnection.cpp; sourceTree = SOURCE_ROOT; };
+		14C4A96D1C4291F4001BED47 /* poolconnection.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = poolconnection.h; path = includes/poolconnection.h; sourceTree = "<group>"; };
+		14C4A96E1C42A471001BED47 /* httpclient.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = httpclient.cpp; path = src/httpclient.cpp; sourceTree = SOURCE_ROOT; };
+		14C4A9701C42A483001BED47 /* httpclient.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = httpclient.h; path = includes/httpclient.h; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -83,6 +94,10 @@
 				14B1858F1C3DB689005D5C15 /* main.cpp */,
 				14B185901C3DB689005D5C15 /* cpuworker.cpp */,
 				14B185911C3DB689005D5C15 /* sha3.cpp */,
+				14C4A94D1C414670001BED47 /* connection.cpp */,
+				14C4A94F1C4150CF001BED47 /* miner.cpp */,
+				14C4A96B1C4291D7001BED47 /* poolconnection.cpp */,
+				14C4A96E1C42A471001BED47 /* httpclient.cpp */,
 			);
 			name = src;
 			path = ethergen;
@@ -91,6 +106,7 @@
 		14B185691C3DB200005D5C15 /* includes */ = {
 			isa = PBXGroup;
 			children = (
+				14C4A94C1C4141C0001BED47 /* rapidjson */,
 				14B185771C3DB65E005D5C15 /* miner.hpp */,
 				14B185781C3DB65E005D5C15 /* connection.hpp */,
 				14B185791C3DB65E005D5C15 /* work.hpp */,
@@ -100,6 +116,8 @@
 				14B1857D1C3DB65E005D5C15 /* bits.hpp */,
 				14B1857E1C3DB65E005D5C15 /* sha3.hpp */,
 				14B1857F1C3DB65E005D5C15 /* sizetable.hpp */,
+				14C4A96D1C4291F4001BED47 /* poolconnection.h */,
+				14C4A9701C42A483001BED47 /* httpclient.h */,
 			);
 			name = includes;
 			sourceTree = "<group>";
@@ -161,12 +179,16 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				14C4A96F1C42A471001BED47 /* httpclient.cpp in Sources */,
 				14B185931C3DB689005D5C15 /* work.cpp in Sources */,
 				14B185921C3DB689005D5C15 /* worker.cpp in Sources */,
 				14B185971C3DB689005D5C15 /* sha3.cpp in Sources */,
 				14B185951C3DB689005D5C15 /* main.cpp in Sources */,
 				14B185941C3DB689005D5C15 /* block.cpp in Sources */,
+				14C4A9501C4150CF001BED47 /* miner.cpp in Sources */,
+				14C4A94E1C414670001BED47 /* connection.cpp in Sources */,
 				14B185961C3DB689005D5C15 /* cpuworker.cpp in Sources */,
+				14C4A96C1C4291D7001BED47 /* poolconnection.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
