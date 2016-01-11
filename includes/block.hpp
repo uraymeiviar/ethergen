@@ -3,6 +3,9 @@
 
 #include <stdint.h>
 #include "bits.hpp"
+#include <map>
+
+typedef uint32_t Epoch;
 
 class Block
 {
@@ -12,7 +15,7 @@ public:
     
     const Bits<256> getSeedHash() const;
     uint64_t getBlockNumber() const;
-    uint64_t getEpoch() const;
+    Epoch getEpoch() const;
     
     Block();
     Block(const Block& ref);
@@ -20,13 +23,15 @@ public:
     Block(uint64_t blockNumber);
     Block(uint64_t blockNumber,Bits<256> seedHash);
     
-    static uint64_t blockNumToEpoch(uint64_t blockNumber);
-    static Bits<256> createSeedHash(uint64_t blockNumber);
-    static Bits<256> createSeedHash(uint64_t blockNumber, uint64_t prevBlockNumber, const Bits<256>& prevSeed);
+    static Epoch blockNumToEpoch(uint64_t blockNumber);
+    static Bits<256> getSeedHash(Epoch epoch);
     
     Bits<256> seedHash;
     uint64_t blockNumber;
 protected:
+    static void createSeedMapCache();
+    static std::map<uint64_t,Bits<256>> epochToSeedMap;
+    static std::map<Bits<256>,uint64_t> seedToEpochMap;
 };
 
 #endif /* block_h */

@@ -36,8 +36,16 @@ public:
     static const uint32_t MixNodes = 2;
     
     Work() : Block() {};
-    Work(const Work& ref) : Block((const Block&)ref){};
-    Work(const Work& ref, uint64_t blockNumber) : Block((const Block&)ref,blockNumber){};
+    Work(const Work& ref) : Block((const Block&)ref)
+    {
+        this->target = ref.target;
+        this->headerHash = ref.headerHash;
+    };
+    Work(const Work& ref, uint64_t blockNumber) : Block((const Block&)ref,blockNumber)
+    {
+        this->target = ref.target;
+        this->headerHash = ref.headerHash;
+    };
     Work(uint64_t blockNumber) : Block(blockNumber) {};
     Work(uint64_t blockNumber,Bits<256> seedHash) : Block(blockNumber, seedHash){};
     bool checkNonce(uint64_t nonce, WorkResult& result, std::shared_ptr<const WorkGraph> graph);

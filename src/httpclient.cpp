@@ -39,6 +39,7 @@ void HTTPClient::initSocket()
 
 std::string HTTPClient::http(std::string method,std::string url,std::string body)
 {
+    std::lock_guard<std::mutex> lock(this->lock);
     std::string result;
     HTTPEndpoint httpEndpoint(url);
     struct sockaddr_in ipEndpoint;

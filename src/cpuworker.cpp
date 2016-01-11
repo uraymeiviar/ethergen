@@ -16,47 +16,19 @@ CpuWorkerFactory& CpuWorker::getFactory()
 CpuWorker::CpuWorker()
 : Worker()
 {
-    this->workerThread = std::thread(&CpuWorker::threadProc,this);
+
 }
 
 CpuWorker::~CpuWorker()
 {
-    std::unique_lock<std::mutex> pausedSignal(this->workerPauseMutex);
     this->setRun(false);
-    this->workerPausedSignal.wait(pausedSignal);
-    
-    if(this->workerThread.joinable())
-    {
-        std::unique_lock<std::mutex> runSignal(this->workerRunMutex);
-        this->workerRunSignal.notify_all();
-        runSignal.unlock();
-        this->workerThread.join();
-    }
 }
 
 void CpuWorker::threadProc()
 {
-    bool quit = false;
-    while(!quit)
+    while(this->running)
     {
-        if(!this->running)
-        {
-            std::unique_lock<std::mutex> pausedSignal(this->workerPauseMutex);
-            
-            std::unique_lock<std::mutex> runSignal(this->workerRunMutex);
-            this->workerPausedSignal.notify_all();
-            pausedSignal.unlock();
-            
-            this->workerRunSignal.wait(runSignal);
-            if(!this->running)
-            {
-                quit = true;
-            }
-        }
-        else
-        {
-            this->findNonce();
-        }
+        this->findNonce();
     }
 }
 
@@ -64,24 +36,44 @@ void CpuWorker::setRun(bool run)
 {
     if(this->running == false && run == true)
     {
-        std::lock_guard<std::mutex> runSignal(this->workerRunMutex);
         this->running = true;
-        this->workerRunSignal.notify_all();
+        this->workerThread = std::thread(&CpuWorker::threadProc,this);
     }
     else if(this->running == true && run == false)
     {
-        std::unique_lock<std::mutex> pausedSignal(this->workerPauseMutex);
         this->running = false;
-        this->workerPausedSignal.wait(pausedSignal);
+        if(this->workerThread.joinable())
+        {
+            this->workerThread.join();
+        }
     }
 }
 
 void CpuWorker::setWork(const Work& work, uint64_t startNonce)
 {
+    std::lock_guard<std::mutex> lock(this->workerRunMutex);
     Worker::setWork(work,startNonce);
     this->numPages = this->workGraph->getDAGByteLength() / 128;
 }
 
+void CpuWorker::findNonce()
+{
+    //std::lock_guard<std::mutex> lock(this->workerRunMutex);
+    this->work.checkNonce(this->getCurrentNonce(), this->workResult, this->workGraph );
+    
+    if(this->workResult.hash < this->bestResult)
+    {
+        this->bestResult = this->workResult.hash;
+    }
+    
+    if(this->workResult.hash < this->work.target)
+    {
+        this->onValidResult(*this,this->workResult);
+    }
+    this->updateNextNonce();
+}
+
+/*
 void CpuWorker::findNonce()
 {
     memcpy(this->smix[0].ptr(), this->work.headerHash.ptr(), 32);
@@ -113,22 +105,16 @@ void CpuWorker::findNonce()
     }
     
     SHA3_256(this->workResult.hash.ptr(), smix[0].ptr(), 64 + 32);
-    if(this->onValidResult)
+    
+    if(this->workResult.hash < this->bestResult)
     {
-        for(size_t c=0 ; c<4 ; c++)
-        {
-            uint64_t r = this->workResult.hash.value64(c);
-            uint64_t t = this->work.target.value64(c);
-            if( r < t)
-            {
-                this->onValidResult(*this,this->workResult);
-                break;
-            }
-            else if( t < r)
-            {
-                break;
-            }
-        }
+        this->bestResult = this->workResult.hash;
+    }
+    
+    if(this->workResult.hash < this->work.target)
+    {
+        this->onValidResult(*this,this->workResult);
     }
     this->workResult.nonce++;
 }
+*/

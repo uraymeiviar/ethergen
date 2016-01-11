@@ -13,6 +13,7 @@ public:
     virtual void requestNewWork() = 0;
     virtual uint64_t getBlockNumber() = 0;
     virtual void submitResult(const WorkResult& result) = 0;
+    virtual void submitHashRate(uint64_t hashrate, Bits<256> identity) = 0;
     virtual void setEndPoint(std::string endPoint);
     virtual void setAccountId(const Bits<160>& account);
     virtual void setWorkerName(std::string workerName);
@@ -20,6 +21,7 @@ public:
     virtual std::string getWorkerName() const;
     std::string getEndPoint() const;
     std::function<void(Connection&,const Work&, uint64_t startNonce)> onNewWork;
+    std::function<void(Connection&,const Bits<256>& target)> onNewTarget;
     virtual ~Connection();
 protected:
     std::string endPoint;

@@ -1,19 +1,13 @@
 #include "miner.hpp"
 
-Miner::Miner(Bits<160> accountId)
+Miner::Miner()
 {
-    this->accountId = accountId;
     this->running = false;
 }
 
 Miner::~Miner()
 {
     this->setRun(false);
-}
-
-const Bits<160>& Miner::getAccountId() const
-{
-    return this->accountId;
 }
 
 bool Miner::isRunning() const
@@ -93,12 +87,28 @@ uint64_t Miner::getCurrentHashrate() const
     return hashrate;
 }
 
-void Miner::addWorker(WorkerFactory& workerFactory, ConnectionFactory& connectionFactory, std::string name, std::string endpoint)
+void Miner::update()
+{
+    if(this->isRunning())
+    {
+        for(size_t i=0 ; i<this->workers.size() ; i++)
+        {
+            this->workers.at(i).first->updateHashrate();
+            uint64_t hashrate = this->workers.at(i).first->getCurrentHashrate();
+            this->workers.at(i).second->submitHashRate(hashrate, this->workers.at(i).first->getIdentity());
+            this->workers.at(i).second->requestNewWork();
+        }
+    }
+}
+
+void Miner::addWorker(WorkerFactory& workerFactory, ConnectionFactory& connectionFactory, std::string name, std::string endpoint, Bits<160> accountId, std::string workerParam)
 {
     std::unique_ptr<Worker> worker = workerFactory.create(name);
-    std::unique_ptr<Connection> connection = connectionFactory.create(this->accountId, name, endpoint);
+    worker->setParam(workerParam);
+    std::unique_ptr<Connection> connection = connectionFactory.create(accountId, name, endpoint);
 
     connection->onNewWork = std::bind(&Miner::eventOnNewWork,this,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3,worker.get());
+    connection->onNewTarget = std::bind(&Miner::eventNewTarget,this,std::placeholders::_1,std::placeholders::_2,worker.get());
     worker->onValidResult = std::bind(&Miner::eventWorkResult,this, std::placeholders::_1,
                                       std::placeholders::_2,connection.get());
     if(this->running)
@@ -125,4 +135,26 @@ void Miner::eventWorkResult(const Worker& worker, WorkResult result, Connection*
 {
     connection->submitResult(result);
     connection->requestNewWork();
+}
+
+void Miner::eventNewTarget(Connection& connection,const Bits<256>& target,Worker* worker)
+{
+    worker->setTarget(target);
+}
+
+Bits<256> Miner::getBestResult() const
+{
+    Bits<256> best = Bits<256>("0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
+    if(this->isRunning())
+    {
+        for(size_t i=0 ; i<this->workers.size() ; i++)
+        {
+            Bits<256> workerBest = this->workers.at(i).first->getBestResult();
+            if(workerBest < best)
+            {
+                best = workerBest;
+            }
+        }
+    }
+    return best;
 }

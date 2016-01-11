@@ -3,6 +3,7 @@
 #include <string>
 #include <netinet/in.h>
 #include <map>
+#include <mutex>
 
 class HTTPEndpoint
 {
@@ -26,6 +27,7 @@ public:
     std::string httpPost(std::string url,std::string body);
     std::string httpGet(std::string url);
 protected:
+    std::mutex lock;
     void initSocket();
     int tcpSocket;
     char readBuffer[readBufferSize];

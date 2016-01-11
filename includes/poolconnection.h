@@ -16,6 +16,7 @@ public :
     void requestNewWork() override;
     uint64_t getBlockNumber() override;
     void submitResult(const WorkResult& result) override;
+    void submitHashRate(uint64_t hashrate, Bits<256> identity) override;
     static PoolConnectionFactory& getFactory();
 protected:
     std::string getPoolUrl() const;

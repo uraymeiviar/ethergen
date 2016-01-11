@@ -4,11 +4,11 @@
 #include <fstream>
 #include "sizetable.hpp"
 
-std::map<uint64_t,std::shared_ptr<WorkGraph>> WorkGraph::cachedWorkGraph;
+std::map<Epoch,std::shared_ptr<WorkGraph>> WorkGraph::cachedWorkGraph;
 
 void WorkGraph::computeCache()
 {
-    size_t nodeCount = WorkGraph::getCacheSize(this->blockNumber)/64;
+    size_t nodeCount = WorkGraph::getDAGCacheSize(this->epoch)/64;
     this->cache.resize(nodeCount);
     for(size_t i=0 ; i<this->cache.size() ; i++)
     {
@@ -37,7 +37,7 @@ void WorkGraph::computeCache()
 
 void WorkGraph::computeDAGItem(Bytes<64>& target, size_t index)
 {
-    if(this->cache.size()*64 != WorkGraph::getCacheSize(this->blockNumber))
+    if(this->cache.size()*64 != WorkGraph::getDAGCacheSize(this->epoch))
     {
         this->computeCache();
     }
@@ -66,7 +66,7 @@ void WorkGraph::computeDAGItem(Bytes<64>& result, size_t index, const std::vecto
 
 void WorkGraph::computeDAG()
 {
-    uint64_t dagBytesSize = WorkGraph::getDAGSize(this->blockNumber);
+    uint64_t dagBytesSize = WorkGraph::getDAGSize(this->epoch);
     this->dag.resize(dagBytesSize/64);
     for(size_t n = 0 ; n<this->dag.size(); n++)
     {
@@ -85,7 +85,7 @@ void WorkGraph::computeDAG()
 void WorkGraph::writeDAGToFile(std::string path)
 {
     std::ofstream outputFile( path, std::ofstream::out );
-    if(this->dag.size()*64 != WorkGraph::getDAGSize(this->blockNumber))
+    if(this->dag.size()*64 != WorkGraph::getDAGSize(this->epoch))
     {
         this->computeDAG();
     }
@@ -100,7 +100,7 @@ void WorkGraph::writeDAGToFile(std::string path)
 void WorkGraph::writeDAGCacheToFile(std::string path)
 {
     std::ofstream outputFile( path, std::ofstream::out );
-    if(this->cache.size()*64 != WorkGraph::getCacheSize(this->blockNumber))
+    if(this->cache.size()*64 != WorkGraph::getDAGCacheSize(this->epoch))
     {
         this->computeCache();
     }
@@ -121,7 +121,7 @@ bool WorkGraph::readDAGCacheFromFile(std::string path)
     }
     else
     {
-        size_t nodeCount = WorkGraph::getCacheSize(this->blockNumber)/64;
+        size_t nodeCount = WorkGraph::getDAGCacheSize(this->epoch)/64;
         this->cache.resize(nodeCount);
         for(size_t i=0 ; i<this->cache.size() ; i++)
         {
@@ -141,7 +141,7 @@ bool WorkGraph::readDAGFromFile(std::string path)
     }
     else
     {
-        uint64_t dagBytesSize = WorkGraph::getDAGSize(this->blockNumber);
+        uint64_t dagBytesSize = WorkGraph::getDAGSize(this->epoch);
         this->dag.resize(dagBytesSize/64);
         for(size_t i=0 ; i<this->dag.size() ; i++)
         {
@@ -154,7 +154,7 @@ bool WorkGraph::readDAGFromFile(std::string path)
 
 const Bytes<64>* WorkGraph::getDAG() const
 {
-    if(this->dag.size()*64 != WorkGraph::getDAGSize(this->blockNumber))
+    if(this->dag.size()*64 != WorkGraph::getDAGSize(this->epoch))
     {
         return nullptr;
     }
@@ -163,7 +163,7 @@ const Bytes<64>* WorkGraph::getDAG() const
 
 const Bytes<64>* WorkGraph::getDAGCache() const
 {
-    if(this->cache.size()*64 != WorkGraph::getCacheSize(this->blockNumber))
+    if(this->cache.size()*64 != WorkGraph::getDAGCacheSize(this->epoch))
     {
         return nullptr;
     }
@@ -185,23 +185,33 @@ uint32_t WorkGraph::fnvHash(uint32_t x, uint32_t y)
     return x * WorkGraph::FnvPrime ^ y;
 }
 
-uint32_t WorkGraph::getCacheSize(uint64_t blockNumber)
+uint32_t WorkGraph::getDAGCacheSize(Epoch epoch)
 {
-    return cache_sizes[blockNumber / Block::EpochLength];
+    return cache_sizes[(size_t)epoch];
 }
 
-uint64_t WorkGraph::getDAGSize(uint64_t blockNumber)
+uint64_t WorkGraph::getDAGSize(Epoch epoch)
 {
-    return dag_sizes[blockNumber / Block::EpochLength];
+    return dag_sizes[(size_t)epoch];
 }
 
-std::shared_ptr<WorkGraph> WorkGraph::getWorkGraph(uint64_t blockNumber)
+Epoch WorkGraph::getEpoch() const
 {
-    auto cached = WorkGraph::cachedWorkGraph.find(blockNumber);
+    return this->epoch;
+}
+
+const Bits<256> WorkGraph::getSeedHash() const
+{
+    return this->seedHash;
+}
+
+std::shared_ptr<WorkGraph> WorkGraph::getWorkGraph(Epoch epoch)
+{
+    auto cached = WorkGraph::cachedWorkGraph.find(epoch);
     if(cached == WorkGraph::cachedWorkGraph.end())
     {
-        std::shared_ptr<WorkGraph> workgraph = std::make_shared<WorkGraph>(blockNumber);
-        WorkGraph::cachedWorkGraph[blockNumber] = workgraph;
+        std::shared_ptr<WorkGraph> workgraph = std::make_shared<WorkGraph>(epoch);
+        WorkGraph::cachedWorkGraph[epoch] = workgraph;
         return workgraph;
     }
     else
@@ -210,25 +220,25 @@ std::shared_ptr<WorkGraph> WorkGraph::getWorkGraph(uint64_t blockNumber)
     }
 }
 
-void WorkGraph::deleteWorkGraph(uint64_t blockNumber)
+void WorkGraph::deleteWorkGraph(Epoch epoch)
 {
-    WorkGraph::cachedWorkGraph.erase(blockNumber);
+    WorkGraph::cachedWorkGraph.erase(epoch);
 }
 
-void WorkGraph::deleteWorkGraph(uint64_t blockNumber,std::string dagFile, std::string dagCacheFile)
+void WorkGraph::deleteWorkGraph(Epoch epoch,std::string dagFile, std::string dagCacheFile)
 {
-    WorkGraph::cachedWorkGraph.erase(blockNumber);
+    WorkGraph::cachedWorkGraph.erase(epoch);
     remove(dagFile.c_str());
     remove(dagCacheFile.c_str());
 }
 
-std::shared_ptr<WorkGraph> WorkGraph::getWorkGraph(uint64_t blockNumber, std::string dagFile, std::string dagCacheFile)
+std::shared_ptr<WorkGraph> WorkGraph::getWorkGraph(Epoch epoch, std::string dagFile, std::string dagCacheFile)
 {
-    auto cached = WorkGraph::cachedWorkGraph.find(blockNumber);
+    auto cached = WorkGraph::cachedWorkGraph.find(epoch);
     if(cached == WorkGraph::cachedWorkGraph.end())
     {
-        std::shared_ptr<WorkGraph> workgraph = std::make_shared<WorkGraph>(blockNumber,dagFile,dagCacheFile);
-        WorkGraph::cachedWorkGraph[blockNumber] = workgraph;
+        std::shared_ptr<WorkGraph> workgraph = std::make_shared<WorkGraph>(epoch,dagFile,dagCacheFile);
+        WorkGraph::cachedWorkGraph[epoch] = workgraph;
         return workgraph;
     }
     else
@@ -237,9 +247,10 @@ std::shared_ptr<WorkGraph> WorkGraph::getWorkGraph(uint64_t blockNumber, std::st
     }
 }
 
-WorkGraph::WorkGraph(uint64_t blockNumber,std::string dagFile,std::string dagCacheFile)
-: Block(blockNumber)
+WorkGraph::WorkGraph(Epoch epoch,std::string dagFile,std::string dagCacheFile)
 {
+    this->epoch = epoch;
+    this->seedHash = Block::getSeedHash(epoch);
     if(!this->readDAGCacheFromFile(dagCacheFile))
     {
         this->computeCache();
@@ -252,61 +263,21 @@ WorkGraph::WorkGraph(uint64_t blockNumber,std::string dagFile,std::string dagCac
     }
 }
 
-WorkGraph::WorkGraph(const WorkGraph& ref)
-: Block((const Block&)ref)
+WorkGraph::WorkGraph(Epoch epoch)
 {
-    if(!this->readDAGCacheFromFile("DAG-Light-"+this->seedHash.toString()))
+    this->epoch = epoch;
+    this->seedHash = Block::getSeedHash(epoch);
+    std::string lightFile = "DAG-Light-"+this->seedHash.toString();
+    std::string fullFile = "DAG-"+this->seedHash.toString();
+    if(!this->readDAGCacheFromFile(lightFile))
     {
         this->computeCache();
-        this->writeDAGCacheToFile("DAG-Light-"+this->seedHash.toString());
+        this->writeDAGCacheToFile(lightFile);
     }
-    if(!this->readDAGFromFile("DAG-"+this->seedHash.toString()))
+    if(!this->readDAGFromFile(fullFile))
     {
         this->computeDAG();
-        this->writeDAGToFile("DAG-"+this->seedHash.toString());
+        this->writeDAGToFile(fullFile);
     }
 };
 
-WorkGraph::WorkGraph(const WorkGraph& ref, uint64_t blockNumber)
-: Block((const Block&)ref,blockNumber)
-{
-    if(!this->readDAGCacheFromFile("DAG-Light-"+this->seedHash.toString()))
-    {
-        this->computeCache();
-        this->writeDAGCacheToFile("DAG-Light-"+this->seedHash.toString());
-    }
-    if(!this->readDAGFromFile("DAG-"+this->seedHash.toString()))
-    {
-        this->computeDAG();
-        this->writeDAGToFile("DAG-"+this->seedHash.toString());
-    }
-};
-
-WorkGraph::WorkGraph(uint64_t blockNumber) : Block(blockNumber)
-{
-    if(!this->readDAGCacheFromFile("DAG-Light-"+this->seedHash.toString()))
-    {
-        this->computeCache();
-        this->writeDAGCacheToFile("DAG-Light-"+this->seedHash.toString());
-    }
-    if(!this->readDAGFromFile("DAG-"+this->seedHash.toString()))
-    {
-        this->computeDAG();
-        this->writeDAGToFile("DAG-"+this->seedHash.toString());
-    }
-};
-
-WorkGraph::WorkGraph(uint64_t blockNumber,Bits<256> seedHash)
-: Block(blockNumber, seedHash)
-{
-    if(!this->readDAGCacheFromFile("DAG-Light-"+this->seedHash.toString()))
-    {
-        this->computeCache();
-        this->writeDAGCacheToFile("DAG-Light-"+this->seedHash.toString());
-    }
-    if(!this->readDAGFromFile("DAG-"+this->seedHash.toString()))
-    {
-        this->computeDAG();
-        this->writeDAGToFile("DAG-"+this->seedHash.toString());
-    }
-};

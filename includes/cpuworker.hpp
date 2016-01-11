@@ -22,13 +22,7 @@ protected:
     void threadProc();
     void findNonce();
     std::thread workerThread;
-    
     std::mutex workerRunMutex;
-    std::condition_variable workerRunSignal;
-    
-    std::mutex workerPauseMutex;
-    std::condition_variable workerPausedSignal;
-    
     std::array<Bytes<64>,3> smix;
     size_t numPages;
 };

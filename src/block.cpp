@@ -1,28 +1,68 @@
 #include "block.hpp"
 #include "sha3.hpp"
+#include <iostream>
+#include <fstream>
 
-Bits<256> Block::createSeedHash(uint64_t blockNumber)
+std::map<uint64_t,Bits<256>> Block::epochToSeedMap;
+std::map<Bits<256>,uint64_t> Block::seedToEpochMap;
+
+Bits<256> Block::getSeedHash(Epoch epochs)
 {
-    uint64_t const epochs = blockNumber / Block::EpochLength;
-    Bits<256> seedHash;
-    for (uint64_t i = 0; i < epochs; ++i)
+    if(Block::epochToSeedMap.size() <= 0 || Block::seedToEpochMap.size() <= 0)
     {
-        SHA3_256(seedHash.ptr(), seedHash.ptr(), 32);
+        createSeedMapCache();
     }
-    return seedHash;
+    if(epochs < 2048)
+    {
+        return Block::epochToSeedMap[epochs];
+    }
+    else
+    {
+        Bits<256> seedHash = Block::epochToSeedMap[2047];
+        for (uint64_t i = 2047; i < epochs; ++i)
+        {
+            SHA3_256(seedHash.ptr(), seedHash.ptr(), 32);
+        }
+        return seedHash;
+    }
 }
 
-Bits<256> Block::createSeedHash(uint64_t blockNumber, uint64_t prevBlockNumber, const Bits<256>& prevSeed)
+void Block::createSeedMapCache()
 {
-    uint64_t const epochs = blockNumber / Block::EpochLength;
-    uint64_t const prevEpoch = prevBlockNumber / Block::EpochLength;
-    uint64_t const remainingEpoch = epochs - prevEpoch;
-    Bits<256> seedHash(prevSeed);
-    for (uint64_t i = 0; i < remainingEpoch; ++i)
+    uint64_t seedMapFileSize = 2048*(256/8);
+    uint8_t seedMap[seedMapFileSize];
+    
+    std::ifstream inputFile( "seedmap", std::ios::binary );
+    if(inputFile.fail())
     {
-        SHA3_256(seedHash.ptr(), seedHash.ptr(), 32);
+        Bits<256> seedHash;
+        for(size_t i=0 ; i<2048 ; i++)
+        {
+            uint8_t* ptr = &seedMap[i*(256/8)];
+            memcpy(ptr,seedHash.ptr(),32);
+            
+            Block::epochToSeedMap[i] = Bits<256>(seedHash);
+            Block::seedToEpochMap[seedHash] = i;
+            
+            SHA3_256(seedHash.ptr(), seedHash.ptr(), 32);
+        }
+        
+        std::ofstream outputFile( "seedmap", std::ofstream::out );
+        outputFile.write((char*)seedMap, seedMapFileSize);
+        outputFile.flush();
+        outputFile.close();
     }
-    return seedHash;
+    else
+    {
+        inputFile.read((char*)seedMap,seedMapFileSize);
+        inputFile.close();
+        for(size_t i=0 ; i<2048 ; i++)
+        {
+            uint8_t* ptr = &seedMap[i*(256/8)];
+            Block::epochToSeedMap[i] = Bits<256>(ptr);
+            Block::seedToEpochMap[Bits<256>(ptr)] = i;
+        }
+    }
 }
 
 const Bits<256> Block::getSeedHash() const
@@ -35,20 +75,20 @@ uint64_t Block::getBlockNumber() const
     return this->blockNumber;
 }
 
-uint64_t Block::getEpoch() const
+Epoch Block::getEpoch() const
 {
-    return this->blockNumber / Block::EpochLength;
+    return (Epoch)(this->blockNumber / Block::EpochLength);
 }
 
-uint64_t Block::blockNumToEpoch(uint64_t blockNumber)
+Epoch Block::blockNumToEpoch(uint64_t blockNumber)
 {
-    return blockNumber / Block::EpochLength;
+    return (Epoch)(blockNumber / Block::EpochLength);
 }
 
 Block::Block()
 {
     this->blockNumber = 0;
-    this->seedHash = Block::createSeedHash(0);
+    this->seedHash = Block::getSeedHash((Epoch)0);
 }
 
 Block::Block(const Block& ref)
@@ -64,20 +104,13 @@ Block::Block(const Block& ref,uint64_t blockNumber)
     {
         this->seedHash = ref.seedHash;
     }
-    else if(this->getEpoch() > ref.getEpoch())
-    {
-        this->seedHash = Block::createSeedHash(blockNumber,ref.getBlockNumber(),ref.getSeedHash());
-    }
-    else
-    {
-        this->seedHash = Block::createSeedHash(blockNumber);
-    }
+    this->seedHash = Block::getSeedHash(this->getEpoch());
 }
 
 Block::Block(uint64_t blockNumber)
 {
     this->blockNumber = blockNumber;
-    this->seedHash = Block::createSeedHash(blockNumber);
+    this->seedHash = Block::getSeedHash(this->getEpoch());
 }
 
 Block::Block(uint64_t blockNumber,Bits<256> seedHash)

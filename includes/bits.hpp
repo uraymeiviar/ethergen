@@ -60,6 +60,13 @@ public:
     Bits(){ this->reset(); };
     Bits(const Bits<T>& ref) { this->bytes = ref.bytes; }
     Bits(std::string hexString){ this->fromString(hexString); }
+    Bits(const uint8_t* data)
+    {
+        for(size_t i=0 ; i<T/8 ; i++)
+        {
+            this->bytes[i] = data[i];
+        }
+    }
     
     uint8_t* ptr(size_t offset = 0) {return ((uint8_t*)this->bytes.data())+offset;};
     uint16_t* ptr16(size_t offset = 0) {return ((uint16_t*)this->bytes.data())+offset;};
@@ -118,7 +125,7 @@ public:
             this->bytes[i] = (uint8_t)strtoul(input.substr(2*i,2).c_str(), nullptr, 16);
         }
     }
-    bool operator < (const Bits<T>& rhs)
+    bool operator < (const Bits<T>& rhs) const
     {
         bool result = true;
         for(size_t i=0 ; i<this->bytes.size() ; i++)
@@ -136,7 +143,7 @@ public:
         }
         return result;
     }
-    bool operator ==(const Bits<T>& rhs)
+    bool operator ==(const Bits<T>& rhs) const
     {
         for(size_t i=0 ; i<this->bytes.size() ; i++)
         {
@@ -147,7 +154,7 @@ public:
         }
         return true;
     }
-    bool operator !=(const Bits<T>& rhs)
+    bool operator !=(const Bits<T>& rhs) const
     {
         return !this->operator==(rhs);
     }
