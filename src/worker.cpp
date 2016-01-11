@@ -24,15 +24,6 @@ void Worker::setTarget(const Bits<256>& target)
     this->work.target = target;
 }
 
-void Worker::updateHashrate()
-{
-    std::chrono::system_clock::time_point now = std::chrono::system_clock::now();
-    std::chrono::duration<float> deltaSecs = std::chrono::duration_cast<std::chrono::duration<float>>(now - this->lastNonceCheckTime);
-    this->currentHashrate = this->totalNonce/deltaSecs.count();
-    this->lastNonceCheckTime = now;
-    this->totalNonce = 0;
-}
-
 void Worker::setRun(bool run)
 {
     this->running = run;
@@ -43,11 +34,6 @@ bool Worker::isRunning() const
     return this->running;
 }
 
-uint64_t Worker::getCurrentNonce() const
-{
-    return this->workResult.nonce;
-}
-
 uint64_t Worker::getCurrentHashrate() const
 {
     return this->currentHashrate;
@@ -56,12 +42,6 @@ uint64_t Worker::getCurrentHashrate() const
 const Work& Worker::getCurrentWork() const
 {
     return this->work;
-}
-
-void Worker::updateNextNonce()
-{
-    this->workResult.nonce++;
-    this->totalNonce++;
 }
 
 Worker::Worker()

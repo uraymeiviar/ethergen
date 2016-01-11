@@ -59,9 +59,9 @@ uint64_t PoolConnection::getBlockNumber()
     if(httpReply.length() > 2)
     {
         rapidjson::Document jsonReply;
-        jsonReply.Parse(httpReply.c_str());
+        rapidjson::ParseResult parseResult = jsonReply.Parse(httpReply.c_str());
         
-        if(jsonReply["result"].IsString())
+        if(parseResult && jsonReply.HasMember("result") && jsonReply["result"].IsString())
         {
             std::string blockNumStr = jsonReply["result"].GetString();
             if(blockNumStr.substr(0,2) == "0x")
@@ -81,9 +81,9 @@ void PoolConnection::requestNewWork()
     if(httpReply.length() > 2)
     {
         rapidjson::Document jsonReply;
-        jsonReply.Parse(httpReply.c_str());
+        rapidjson::ParseResult parseResult = jsonReply.Parse(httpReply.c_str());
         
-        if(jsonReply["result"].IsArray())
+        if(parseResult && jsonReply.HasMember("result") && jsonReply["result"].IsArray())
         {
             rapidjson::Value& result = jsonReply["result"];
             if(result.Size() > 2)

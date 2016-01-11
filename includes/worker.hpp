@@ -17,10 +17,8 @@ public:
     const Work& getCurrentWork() const;
     virtual void setRun(bool run);
     virtual bool isRunning() const;
-    virtual uint64_t getCurrentNonce() const;
     virtual uint64_t getCurrentHashrate() const;
-    virtual void updateNextNonce();
-    void updateHashrate();
+    virtual void updateHashrate() = 0;
     Worker();
     virtual ~Worker();
     std::string getName() const;
@@ -29,7 +27,6 @@ public:
     std::function<void(const Worker&, WorkResult)> onValidResult;
 protected:
     std::chrono::system_clock::time_point lastNonceCheckTime;
-    uint64_t totalNonce;
     std::string name;
     std::string param;
     Bits<256> identity;
