@@ -18,7 +18,7 @@ public:
     virtual void setRun(bool run);
     virtual bool isRunning() const;
     virtual uint64_t getCurrentHashrate() const;
-    virtual void updateHashrate() = 0;
+    virtual void updateHashrate();
     Worker();
     virtual ~Worker();
     std::string getName() const;

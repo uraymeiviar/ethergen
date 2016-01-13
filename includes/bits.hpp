@@ -67,7 +67,7 @@ public:
             this->bytes[i] = data[i];
         }
     }
-    void copyFrom(uint8_t* data)
+    void copyFrom(const uint8_t* data)
     {
         memcpy((char*)this->bytes.data(),(char*)data,T/8);
     }
@@ -140,6 +140,60 @@ public:
                 break;
             }
             else if(this->bytes[i] < rhs.bytes[i])
+            {
+                result = true;
+                break;
+            }
+        }
+        return result;
+    }
+    bool operator < (const uint8_t* rhs) const
+    {
+        bool result = true;
+        for(size_t i=0 ; i<this->bytes.size() ; i++)
+        {
+            if(this->bytes[i] > rhs[i])
+            {
+                result = false;
+                break;
+            }
+            else if(this->bytes[i] < rhs[i])
+            {
+                result = true;
+                break;
+            }
+        }
+        return result;
+    }
+    bool operator > (const Bits<T>& rhs) const
+    {
+        bool result = true;
+        for(size_t i=0 ; i<this->bytes.size() ; i++)
+        {
+            if(this->bytes[i] < rhs.bytes[i])
+            {
+                result = false;
+                break;
+            }
+            else if(this->bytes[i] > rhs.bytes[i])
+            {
+                result = true;
+                break;
+            }
+        }
+        return result;
+    }
+    bool operator > (const uint8_t* rhs) const
+    {
+        bool result = true;
+        for(size_t i=0 ; i<this->bytes.size() ; i++)
+        {
+            if(this->bytes[i] < rhs[i])
+            {
+                result = false;
+                break;
+            }
+            else if(this->bytes[i] > rhs[i])
             {
                 result = true;
                 break;

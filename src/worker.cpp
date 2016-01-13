@@ -44,6 +44,11 @@ const Work& Worker::getCurrentWork() const
     return this->work;
 }
 
+void Worker::updateHashrate()
+{
+    
+}
+
 Worker::Worker()
 {
     this->lastNonceCheckTime = std::chrono::system_clock::now();
