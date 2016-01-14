@@ -6,6 +6,7 @@
 #include "work.hpp"
 #include "miner.hpp"
 #include "cpuworker.hpp"
+#include "gpuworker.h"
 #include "poolconnection.h"
 #include "rapidjson/rapidjson.h"
 #include "rapidjson/document.h"
@@ -13,6 +14,7 @@
 #include "rapidjson/error/error.h"
 #include "rapidjson/stringbuffer.h"
 #include "rapidjson/writer.h"
+#include "cl/cl.h"
 
 std::string version = "0.1";
 
@@ -27,14 +29,15 @@ void initFactories()
 void printUsage(const char* cmd)
 {
     std::cout << "ETHERGEN " << version.c_str() << std::endl;
-    std::cout << "usage \"" << cmd << " <mode>\"" << std::endl;
-    std::cout << "mode :" << std::endl;
-    std::cout << "     calc-dag-node <block-number>" << std::endl;
-    std::cout << "          calc-dag <block-number>" << std::endl;
-    std::cout << "              hash <block-number> <nonce> <headerhash> [target]" << std::endl;
-    std::cout << "         benchmark <cpu|gpu> <threads>" << std::endl;
-    std::cout << "               gen <config-file>" << std::endl;
-    std::cout << "              help" << std::endl;
+    std::cout << "usage  " << cmd << " <mode>" << std::endl;
+    std::cout << "mode               | parameters " << std::endl;
+    std::cout << "     calc-dag-node   <block-number>" << std::endl;
+    std::cout << "     calc-dag        <block-number>" << std::endl;
+    std::cout << "     hash            <block-number> <nonce> <headerhash> [target]" << std::endl;
+    std::cout << "     benchmark       <config-file>" << std::endl;
+    std::cout << "     clinfo          <cpu|gpu|all>" << std::endl;
+    std::cout << "     gen             <config-file>" << std::endl;
+    std::cout << "     help" << std::endl;
     std::cout << std::endl;
 }
 
@@ -116,6 +119,61 @@ void hash(int argc, const char* argv[])
         std::cout << " Target Hash " << work.target.toString() << std::endl;
         std::cout << " Hash Result " << result.hash.toString() << std::endl;
         std::cout << "Below Target " << std::to_string(targetResult) << std::endl;
+    }
+}
+
+void openclInfo(int argc, const char* argv[])
+{
+    cl_device_type clType = CL_DEVICE_TYPE_ALL;
+    if(argc > 2)
+    {
+        std::string typeStr = std::string(argv[2]);
+        if(typeStr == "cpu" || typeStr == "CPU")
+        {
+            clType = CL_DEVICE_TYPE_CPU;
+        }
+        else if(typeStr == "gpu" || typeStr == "GPU")
+        {
+            clType = CL_DEVICE_TYPE_GPU;
+        }
+    }
+    std::map<cl_platform_id,std::vector<cl_device_id>> devices;
+    GpuWorker::getAllDevices(devices,clType);
+    ClDeviceInfo deviceInfo;
+    
+    for(auto &x : devices){
+        deviceInfo.platform = x.first;
+        for(auto &d : x.second)
+        {
+            deviceInfo.device = d;
+            if(ClDeviceInfo::getInfo(deviceInfo))
+            {
+                std::string endian = "Endian:L";
+                if(!deviceInfo.endianLittle)
+                {
+                    endian = "Endian:B";
+                }
+                std::string wiSize = std::to_string(deviceInfo.maxWorkItemSize[0]);
+                for(size_t w = 1 ; w<deviceInfo.maxWorkItemSize.size() ; w++)
+                {
+                    wiSize += "x"+std::to_string(deviceInfo.maxWorkItemSize[w]);
+                }
+                std::cout << deviceInfo.platform << ":" << deviceInfo.device << " " << deviceInfo.name << " ( " << ClDeviceInfo::deviceTypeToString(deviceInfo.type) << ") " << deviceInfo.version << "/ SW." << deviceInfo.driverVersion << " " << deviceInfo.vendor << " (0x" << std::hex << deviceInfo.vendorId << ") " << endian << std::endl;
+                
+                std::cout << "  GMemSize: " << std::to_string(deviceInfo.globalMemorySize/(1024*1024)) << "MB" <<
+                             "  GCacheSize: " << std::to_string(deviceInfo.globalMemoryCacheSize) <<
+                             "  GCacheLine: " << std::to_string(deviceInfo.globalMemoryCacheLineSize/1024) << "KB" <<
+                             "  LMemSize: " << std::to_string(deviceInfo.localMemorySize/1024) << "KB" << std::endl;
+                
+                std::cout << "  MaxClock: " << std::to_string(deviceInfo.maxClock) << "MHz" <<
+                             "  MaxCU: " << std::to_string(deviceInfo.maxComputeUnit) <<
+                             "  MaxConst: " << std::to_string(deviceInfo.maxConstant) << "x" << std::to_string(deviceInfo.maxConstantBufferSize/1024) << "KB" <<
+                             "  MaxAlloc: " << std::to_string(deviceInfo.maxMemoryAllocSize/(1024*1024)) << "MB" << std::endl;
+                std::cout << "  MaxParamSize: " << std::to_string(deviceInfo.maxParameterSize) <<
+                             "  MaxWGSize: " << std::to_string(deviceInfo.maxWorkGroupSize) <<
+                             "  MaxWISize: " << wiSize << std::endl << std::endl;
+            }
+        }
     }
 }
 
@@ -273,6 +331,10 @@ int main(int argc, const char * argv[])
         else if(mode == "hash")
         {
             hash(argc,argv);
+        }
+        else if(mode == "clinfo")
+        {
+            openclInfo(argc,argv);
         }
         else if(mode == "gen")
         {

@@ -39,7 +39,8 @@ public:
     }
     inline void hash(const std::shared_ptr<WorkGraph> workgraph)
     {
-        SHA3_512(this->smix[0].ptr(), this->smix[0].ptr(), 40);
+        //SHA3_512(this->smix[0].ptr(), this->smix[0].ptr(), 40);
+        SHA3_40B_512(this->smix[0].ptr(), this->smix[0].ptr());
         for(int i=0 ; i<8 ; i++)
         {
             *this->smix[1].ptr64(i) = *this->smix[0].ptr64(i);
@@ -67,7 +68,8 @@ public:
             mix[w] = fnv(mix[w  ],mix[w*4 + 3]);
         }
         
-        SHA3_256(smix[3].ptr(), smix[0].ptr(), 64 + 32);
+        //SHA3_256(smix[3].ptr(), smix[0].ptr(), 64 + 32);
+        SHA3_96B_256(smix[3].ptr(), smix[0].ptr());
     }
     Bytes<64> smix[4];
 };
