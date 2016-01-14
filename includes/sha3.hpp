@@ -153,55 +153,53 @@ static void keccakf_sse(uint64_t st[32])
 }
 */
 
-static void keccakf(uint64_t st[25])
+static void keccakf(uint64_t* st)
 {
-    uint64_t t[5];
-    uint64_t bc[5];
-    uint64_t pst[25];
+    uint64_t* pst = &st[25];
     
     for (int r = 0; r < KECCAKF_ROUNDS; r++)
     {
-        bc[0] = st[0] ^ st[0 + 5] ^ st[0 + 10] ^ st[0 + 15] ^ st[0 + 20];
-        bc[1] = st[1] ^ st[1 + 5] ^ st[1 + 10] ^ st[1 + 15] ^ st[1 + 20];
-        bc[2] = st[2] ^ st[2 + 5] ^ st[2 + 10] ^ st[2 + 15] ^ st[2 + 20];
-        bc[3] = st[3] ^ st[3 + 5] ^ st[3 + 10] ^ st[3 + 15] ^ st[3 + 20];
-        bc[4] = st[4] ^ st[4 + 5] ^ st[4 + 10] ^ st[4 + 15] ^ st[4 + 20];
+        pst[0] = st[0] ^ st[0 + 5] ^ st[0 + 10] ^ st[0 + 15] ^ st[0 + 20];
+        pst[1] = st[1] ^ st[1 + 5] ^ st[1 + 10] ^ st[1 + 15] ^ st[1 + 20];
+        pst[2] = st[2] ^ st[2 + 5] ^ st[2 + 10] ^ st[2 + 15] ^ st[2 + 20];
+        pst[3] = st[3] ^ st[3 + 5] ^ st[3 + 10] ^ st[3 + 15] ^ st[3 + 20];
+        pst[4] = st[4] ^ st[4 + 5] ^ st[4 + 10] ^ st[4 + 15] ^ st[4 + 20];
         
-        t[0] = bc[4] ^ ROTL64(bc[1], 1);
-        t[1] = bc[0] ^ ROTL64(bc[2], 1);
-        t[2] = bc[1] ^ ROTL64(bc[3], 1);
-        t[3] = bc[2] ^ ROTL64(bc[4], 1);
-        t[4] = bc[3] ^ ROTL64(bc[0], 1);
+        pst[5] = pst[4] ^ ROTL64(pst[1], 1);
+        pst[6] = pst[0] ^ ROTL64(pst[2], 1);
+        pst[7] = pst[1] ^ ROTL64(pst[3], 1);
+        pst[8] = pst[2] ^ ROTL64(pst[4], 1);
+        pst[9] = pst[3] ^ ROTL64(pst[0], 1);
         
-        st[ 0+0] ^= t[0];
-        st[ 0+1] ^= t[1];
-        st[ 0+2] ^= t[2];
-        st[ 0+3] ^= t[3];
-        st[ 0+4] ^= t[4];
+        st[ 0+0] ^= pst[5];
+        st[ 0+1] ^= pst[6];
+        st[ 0+2] ^= pst[7];
+        st[ 0+3] ^= pst[8];
+        st[ 0+4] ^= pst[9];
         
-        st[ 5+0] ^= t[0];
-        st[ 5+1] ^= t[1];
-        st[ 5+2] ^= t[2];
-        st[ 5+3] ^= t[3];
-        st[ 5+4] ^= t[4];
+        st[ 5+0] ^= pst[5];
+        st[ 5+1] ^= pst[6];
+        st[ 5+2] ^= pst[7];
+        st[ 5+3] ^= pst[8];
+        st[ 5+4] ^= pst[9];
         
-        st[10+0] ^= t[0];
-        st[10+1] ^= t[1];
-        st[10+2] ^= t[2];
-        st[10+3] ^= t[3];
-        st[10+4] ^= t[4];
+        st[10+0] ^= pst[5];
+        st[10+1] ^= pst[6];
+        st[10+2] ^= pst[7];
+        st[10+3] ^= pst[8];
+        st[10+4] ^= pst[9];
         
-        st[15+0] ^= t[0];
-        st[15+1] ^= t[1];
-        st[15+2] ^= t[2];
-        st[15+3] ^= t[3];
-        st[15+4] ^= t[4];
+        st[15+0] ^= pst[5];
+        st[15+1] ^= pst[6];
+        st[15+2] ^= pst[7];
+        st[15+3] ^= pst[8];
+        st[15+4] ^= pst[9];
         
-        st[20+0] ^= t[0];
-        st[20+1] ^= t[1];
-        st[20+2] ^= t[2];
-        st[20+3] ^= t[3];
-        st[20+4] ^= t[4];
+        st[20+0] ^= pst[5];
+        st[20+1] ^= pst[6];
+        st[20+2] ^= pst[7];
+        st[20+3] ^= pst[8];
+        st[20+4] ^= pst[9];
         
         // Rho Pi
         pst[ 0] = st[ 0];
@@ -269,7 +267,7 @@ static inline void hash(uint8_t* out, size_t outlen,
                  const uint8_t* in, size_t inlen,
                  size_t rate)
 {
-    alignas(8) uint64_t st[25] = {0};
+    alignas(8) uint64_t st[50] = {0};
     uint8_t* a = (uint8_t*)st;
     const uint64_t* in64 = (const uint64_t*)in;
     
