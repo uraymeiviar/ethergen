@@ -6,6 +6,7 @@
 #include "work.hpp"
 #include "miner.hpp"
 #include "cpuworker.hpp"
+#include "gpuworker.h"
 #include "poolconnection.h"
 #include "rapidjson/rapidjson.h"
 #include "rapidjson/document.h"
@@ -13,6 +14,7 @@
 #include "rapidjson/error/error.h"
 #include "rapidjson/stringbuffer.h"
 #include "rapidjson/writer.h"
+#include "cl/cl.h"
 
 std::string version = "0.1";
 
@@ -33,6 +35,7 @@ void printUsage(const char* cmd)
     std::cout << "     calc-dag        <block-number>" << std::endl;
     std::cout << "     hash            <block-number> <nonce> <headerhash> [target]" << std::endl;
     std::cout << "     benchmark       <config-file>" << std::endl;
+    std::cout << "     clinfo          <cpu|gpu|all>" << std::endl;
     std::cout << "     gen             <config-file>" << std::endl;
     std::cout << "     help" << std::endl;
     std::cout << std::endl;
@@ -119,6 +122,61 @@ void hash(int argc, const char* argv[])
     }
 }
 
+void openclInfo(int argc, const char* argv[])
+{
+    cl_device_type clType = CL_DEVICE_TYPE_ALL;
+    if(argc > 2)
+    {
+        std::string typeStr = std::string(argv[2]);
+        if(typeStr == "cpu" || typeStr == "CPU")
+        {
+            clType = CL_DEVICE_TYPE_CPU;
+        }
+        else if(typeStr == "gpu" || typeStr == "GPU")
+        {
+            clType = CL_DEVICE_TYPE_GPU;
+        }
+    }
+    std::map<cl_platform_id,std::vector<cl_device_id>> devices;
+    GpuWorker::getAllDevices(devices,clType);
+    ClDeviceInfo deviceInfo;
+    
+    for(auto &x : devices){
+        deviceInfo.platform = x.first;
+        for(auto &d : x.second)
+        {
+            deviceInfo.device = d;
+            if(ClDeviceInfo::getInfo(deviceInfo))
+            {
+                std::string endian = "Endian:L";
+                if(!deviceInfo.endianLittle)
+                {
+                    endian = "Endian:B";
+                }
+                std::string wiSize = std::to_string(deviceInfo.maxWorkItemSize[0]);
+                for(size_t w = 1 ; w<deviceInfo.maxWorkItemSize.size() ; w++)
+                {
+                    wiSize += "x"+std::to_string(deviceInfo.maxWorkItemSize[w]);
+                }
+                std::cout << deviceInfo.platform << ":" << deviceInfo.device << " " << deviceInfo.name << " ( " << ClDeviceInfo::deviceTypeToString(deviceInfo.type) << ") " << deviceInfo.version << "/ SW." << deviceInfo.driverVersion << " " << deviceInfo.vendor << " (0x" << std::hex << deviceInfo.vendorId << ") " << endian << std::endl;
+                
+                std::cout << "  GMemSize: " << std::to_string(deviceInfo.globalMemorySize/(1024*1024)) << "MB" <<
+                "  GCacheSize: " << std::to_string(deviceInfo.globalMemoryCacheSize) <<
+                "  GCacheLine: " << std::to_string(deviceInfo.globalMemoryCacheLineSize/1024) << "KB" <<
+                "  LMemSize: " << std::to_string(deviceInfo.localMemorySize/1024) << "KB" << std::endl;
+                
+                std::cout << "  MaxClock: " << std::to_string(deviceInfo.maxClock) << "MHz" <<
+                "  MaxCU: " << std::to_string(deviceInfo.maxComputeUnit) <<
+                "  MaxConst: " << std::to_string(deviceInfo.maxConstant) << "x" << std::to_string(deviceInfo.maxConstantBufferSize/1024) << "KB" <<
+                "  MaxAlloc: " << std::to_string(deviceInfo.maxMemoryAllocSize/(1024*1024)) << "MB" << std::endl;
+                std::cout << "  MaxParamSize: " << std::to_string(deviceInfo.maxParameterSize) <<
+                "  MaxWGSize: " << std::to_string(deviceInfo.maxWorkGroupSize) <<
+                "  MaxWISize: " << wiSize << std::endl << std::endl;
+            }
+        }
+    }
+}
+
 void gen(int argc, const char* argv[])
 {
     if(argc < 3)
@@ -136,7 +194,7 @@ void gen(int argc, const char* argv[])
         else
         {
             std::string configStr((std::istreambuf_iterator<char>(inputFile)),
-                                   std::istreambuf_iterator<char>());
+                                  std::istreambuf_iterator<char>());
             inputFile.close();
             
             rapidjson::Document configJson;
@@ -144,8 +202,8 @@ void gen(int argc, const char* argv[])
             
             if (!parseResult) {
                 std::cout << "config JSON parse error: " <<
-                            rapidjson::GetParseError_En(parseResult.Code()) <<
-                            ":" << std::to_string(parseResult.Offset()) << std::endl;
+                rapidjson::GetParseError_En(parseResult.Code()) <<
+                ":" << std::to_string(parseResult.Offset()) << std::endl;
             }
             else
             {
@@ -273,6 +331,10 @@ int main(int argc, const char * argv[])
         else if(mode == "hash")
         {
             hash(argc,argv);
+        }
+        else if(mode == "clinfo")
+        {
+            openclInfo(argc,argv);
         }
         else if(mode == "gen")
         {
