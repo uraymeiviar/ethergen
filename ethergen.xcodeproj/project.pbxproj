@@ -7,7 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		147CD0631C446BA5003AF08D /* sha3.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 147CD0621C446BA5003AF08D /* sha3.cpp */; };
+		147CD0661C46461D003AF08D /* gpuworker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 147CD0651C46461D003AF08D /* gpuworker.cpp */; };
+		147CD0691C465836003AF08D /* OpenCL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 147CD0681C465836003AF08D /* OpenCL.framework */; };
 		14B185921C3DB689005D5C15 /* worker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14B1858C1C3DB689005D5C15 /* worker.cpp */; };
 		14B185931C3DB689005D5C15 /* work.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14B1858D1C3DB689005D5C15 /* work.cpp */; };
 		14B185941C3DB689005D5C15 /* block.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14B1858E1C3DB689005D5C15 /* block.cpp */; };
@@ -34,7 +35,10 @@
 
 /* Begin PBXFileReference section */
 		141BB6D41C3830CE004E0175 /* ethergen */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = ethergen; sourceTree = BUILT_PRODUCTS_DIR; };
-		147CD0621C446BA5003AF08D /* sha3.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = sha3.cpp; path = src/sha3.cpp; sourceTree = SOURCE_ROOT; };
+		147CD0641C464496003AF08D /* cl */ = {isa = PBXFileReference; lastKnownFileType = folder; name = cl; path = includes/cl; sourceTree = "<group>"; };
+		147CD0651C46461D003AF08D /* gpuworker.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = gpuworker.cpp; path = src/gpuworker.cpp; sourceTree = SOURCE_ROOT; };
+		147CD0671C46463B003AF08D /* gpuworker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = gpuworker.h; path = includes/gpuworker.h; sourceTree = "<group>"; };
+		147CD0681C465836003AF08D /* OpenCL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = OpenCL.framework; sourceTree = "<group>"; };
 		14B185771C3DB65E005D5C15 /* miner.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = miner.hpp; path = includes/miner.hpp; sourceTree = SOURCE_ROOT; };
 		14B185781C3DB65E005D5C15 /* connection.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = connection.hpp; path = includes/connection.hpp; sourceTree = SOURCE_ROOT; };
 		14B185791C3DB65E005D5C15 /* work.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = work.hpp; path = includes/work.hpp; sourceTree = SOURCE_ROOT; };
@@ -65,6 +69,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				147CD0691C465836003AF08D /* OpenCL.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -74,6 +79,7 @@
 		141BB6CB1C3830CD004E0175 = {
 			isa = PBXGroup;
 			children = (
+				147CD0681C465836003AF08D /* OpenCL.framework */,
 				14B185691C3DB200005D5C15 /* includes */,
 				141BB6D61C3830CE004E0175 /* src */,
 				141BB6D51C3830CE004E0175 /* Products */,
@@ -91,7 +97,6 @@
 		141BB6D61C3830CE004E0175 /* src */ = {
 			isa = PBXGroup;
 			children = (
-				147CD0621C446BA5003AF08D /* sha3.cpp */,
 				14B1858C1C3DB689005D5C15 /* worker.cpp */,
 				14B1858D1C3DB689005D5C15 /* work.cpp */,
 				14B1858E1C3DB689005D5C15 /* block.cpp */,
@@ -102,6 +107,7 @@
 				14C4A96B1C4291D7001BED47 /* poolconnection.cpp */,
 				14C4A96E1C42A471001BED47 /* httpclient.cpp */,
 				14C4A9721C42F9C3001BED47 /* workgraph.cpp */,
+				147CD0651C46461D003AF08D /* gpuworker.cpp */,
 			);
 			name = src;
 			path = ethergen;
@@ -110,6 +116,7 @@
 		14B185691C3DB200005D5C15 /* includes */ = {
 			isa = PBXGroup;
 			children = (
+				147CD0641C464496003AF08D /* cl */,
 				14C4A94C1C4141C0001BED47 /* rapidjson */,
 				14B185771C3DB65E005D5C15 /* miner.hpp */,
 				14B185781C3DB65E005D5C15 /* connection.hpp */,
@@ -123,6 +130,7 @@
 				14C4A96D1C4291F4001BED47 /* poolconnection.h */,
 				14C4A9701C42A483001BED47 /* httpclient.h */,
 				14C4A9711C42F9B1001BED47 /* workgraph.hpp */,
+				147CD0671C46463B003AF08D /* gpuworker.h */,
 			);
 			name = includes;
 			sourceTree = "<group>";
@@ -185,9 +193,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				14C4A96F1C42A471001BED47 /* httpclient.cpp in Sources */,
-				147CD0631C446BA5003AF08D /* sha3.cpp in Sources */,
 				14B185931C3DB689005D5C15 /* work.cpp in Sources */,
 				14B185921C3DB689005D5C15 /* worker.cpp in Sources */,
+				147CD0661C46461D003AF08D /* gpuworker.cpp in Sources */,
 				14B185951C3DB689005D5C15 /* main.cpp in Sources */,
 				14C4A9731C42F9C3001BED47 /* workgraph.cpp in Sources */,
 				14B185941C3DB689005D5C15 /* block.cpp in Sources */,
@@ -255,6 +263,7 @@
 				CLANG_DEBUG_INFORMATION_LEVEL = "line-tables-only";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_USE_OPTIMIZATION_PROFILE = NO;
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
@@ -268,6 +277,7 @@
 				CODE_SIGN_ENTITLEMENTS = "";
 				CODE_SIGN_IDENTITY = "Developer ID Application";
 				COPY_PHASE_STRIP = YES;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -297,6 +307,10 @@
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Mac Developer";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 			};
@@ -307,6 +321,10 @@
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Mac Developer";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 			};
