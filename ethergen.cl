@@ -2,9 +2,25 @@
 
 
 #define KECCAK_ROUNDS 24
+#define FNV_PRIME   0x01000193
 #define ROTL64(x, y)  (((x) << (y)) | ((x) >> (64 - (y))))
 #define ROTL32xy(a,b) (uint2)( (a).x << (b) | (a).y >> (32-(b)) , (a).y << (b) | (a).x >> (32-(b)))
 #define COPY(dst, src, count) for (uint i = 0; i != count; ++i) { (dst)[i] = (src)[i]; }
+
+static uint fnv(uint x, uint y)
+{
+    return x * FNV_PRIME ^ y;
+}
+
+static uint4 fnv4(uint4 x, uint4 y)
+{
+    return x * FNV_PRIME ^ y;
+}
+
+static uint fnv_reduce(uint4 v)
+{
+    return fnv(fnv(fnv(v.x, v.y), v.z), v.w);
+}
 
 typedef union
 {
@@ -243,71 +259,131 @@ static void keccak_round(uint2* st, int round)
     }
 }
 
-static void SHA3_96B_256(uchar* ret, uchar const* data)
+static void SHA3_96B_256(ulong* output, ulong const* input)
 {
-    uint2 st[50];
-    for (uint i = 0; i < 25; i++)
+    ulong st[50];
+    for(int i=0 ; i<12 ; i++)
     {
-        st[i].x = 0;
-        st[i].y = 0;
+        st[i] = input[i];
     }
-    uchar* a = (uchar*)st;
-    const ulong* in64 = (const ulong*)data;
-    
-    a[ 96] ^= 0x01;
-    a[135] ^= 0x80;
-    for(uint i=0 ; i<96/8 ; i++)
+    st[12] = 0x0000000000000001;
+    st[13] = 0x0000000000000000;
+    st[14] = 0x0000000000000000;
+    st[15] = 0x0000000000000000;
+    st[16] = 0x8000000000000000;
+    for(int i=17 ; i<25 ; i++)
     {
-        st[i] ^= in64[i];
+        st[i] = 0;
     }
     keccak_round(st,KECCAK_ROUNDS-1);
     keccak_final256(st);
     
-    COPY(ret,a,32);
+    COPY(putput,input,4);
 }
 
-static void SHA3_40B_512(uchar* ret, uchar const* data)
+static void SHA3_40B_512(ulong* buffer)
 {
-    uint2 st[50];
-    for (uint i = 0; i < 25; i++)
-    {
-        st[i].x = 0;
-        st[i].y = 0;
-    }
-    uchar* a = (uchar*)st;
-    const ulong* in64 = (const ulong*)data;
+    ulong st[50];
     
-    a[40] ^= 0x01;
-    a[71] ^= 0x80;
-    for(size_t i=0 ; i<40/8 ; i++)
+    for(int i=0 ; i<5 ; i++)
     {
-        st[i] ^= in64[i];
+        st[i] = buffer[i];
     }
+    st[5] = 0x0000000000000001;
+    st[6] = 0x0000000000000000;
+    st[7] = 0x0000000000000000;
+    st[8] = 0x8000000000000000;
+    for(int i=9 ; i<25 ; i++)
+    {
+        st[i] = 0;
+    }
+
     keccak_round(st,KECCAK_ROUNDS-1);
     keccak_final512(st);
     
-    COPY(ret,a,64);
+    COPY(buffer,st,8);
 }
 
 //                64|         64|         64|         64| = 256 bytes x 1,048,576 = 256MB
 //     +------------+-----------+-----------+-----------+
 //SMIX |           0|          1|          2|          3|
 //pre  |header|nonce|           |           |     |nonce|
-//post |            |mix  |     |           |hash |nonce|
+//post |            |mix  |     |flag       |hash |nonce|
 
 __kernel void prehash(
         __global bits512* hashpad,
         __constant bits256 const* header,
         ulong startNonce )
 {
-
+    uint const gid = get_global_id(0);
+    ulong nonce = startNonce + gid;
+    ulong* buffer = (ulong*)(hashpad+(4*gid));
+    COPY(buffer,header->u32,8);
+    buffer[8]  = nonce;
+    buffer[56] = nonce;
+    SHA3_40B_512(buffer);
+    for(uint i=0 ; i<16 ; i++)
+    {
+        buffer[16+i] = buffer[i];
+        buffer[32+i] = buffer[i];
+    }
 }
 
 __kernel void finalhash(
         __global bits512* hashpad,
         __constant bits256 const* target)
 {
+    uint const gid = get_global_id(0);
+    ulong*  buffer = (ulong*) (hashpad+(4*gid)  );
+    uint4*  mixSrc = (uint4*) (hashpad+(4*gid)+1);
+    uint*   mixDst = (uint*)  (hashpad+(4*gid)+1);
+    ulong4* flag   = (ulong4*)(hashpad+(4*gid)+2);
+    ulong*  dest   = (ulong*) (hashpad+(4*gid)+3);
+    ulong4* hash   = (ulong4*)(hashpad+(4*gid)+3);
+    for(uint i=0 ; i<8 ; i++)
+    {
+        mixDst[i] = fnv_reduce(mixSrc[i]);
+    }
+    SHA3_96B_256(dest,buffer);
 
+    if(target.u64[0] < hash.s0)
+    {
+        flag.s0 = 0;
+    }
+    else if(target.u64[0] > hash.s0)
+    {
+        flag.s0 = 1;
+    }
+    else{
+        if(target.u64[1] < hash.s1)
+        {
+            flag.s0 = 0;
+        }
+        else if(target.u64[0] > hash.s0)
+        {
+            flag.s0 = 1;
+        }
+        else{
+            if(target.u64[2] < hash.s2)
+            {
+                flag.s0 = 0;
+            }
+            else if(target.u64[0] > hash.s0)
+            {
+                flag.s0 = 1;
+            }
+            else{
+                if(target.u64[2] < hash.s2)
+                {
+                    flag.s0 = 0;
+                }
+                else if(target.u64[0] >= hash.s0)
+                {
+                    flag.s0 = 1;
+                }
+            }
+        }
+    }
 }
 
 
