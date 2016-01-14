@@ -393,43 +393,58 @@ static inline void hash(uint8_t* out, size_t outlen,
 
 static inline void SHA3_96B_256(uint8_t* ret, uint8_t const* data)
 {
-    alignas(8) uint64_t st[50] = {0};
-    uint8_t* a = (uint8_t*)st;
+    alignas(8) uint64_t st[50];
     const uint64_t* in64 = (const uint64_t*)data;
+    uint64_t* out64 = (uint64_t*)ret;
     
-    a[96] ^= 0x01;
-    a[135] ^= 0x80;
-    for(size_t i=0 ; i<96/8 ; i++)
+    for(int i=0 ; i<12 ; i++)
     {
-        st[i] ^= in64[i];
+        st[i] = in64[i];
     }
+    st[12] = 0x0000000000000001;
+    st[13] = 0x0000000000000000;
+    st[14] = 0x0000000000000000;
+    st[15] = 0x0000000000000000;
+    st[16] = 0x8000000000000000;
+    for(int i=17 ; i<25 ; i++)
+    {
+        st[i] = 0;
+    }
+    
     keccakf(st,KECCAKF_ROUNDS-1);
     keccak_final256(st);
     
-    for(size_t i=0 ; i<32 ; i++)
+    for(int i=0 ; i<4 ; i++)
     {
-        ret[i] = a[i];
+        out64[i] = st[i];
     }
 }
 
-static inline void SHA3_40B_512(uint8_t* ret, uint8_t const* data)
+static inline void SHA3_40B_512(uint8_t* data)
 {
-    alignas(8) uint64_t st[50] = {0};
-    uint8_t* a = (uint8_t*)st;
+    alignas(8) uint64_t st[50];
     const uint64_t* in64 = (const uint64_t*)data;
+    uint64_t* out64 = (uint64_t*)data;
     
-    a[40] ^= 0x01;
-    a[71] ^= 0x80;
-    for(size_t i=0 ; i<40/8 ; i++)
+    for(int i=0 ; i<5 ; i++)
     {
-        st[i] ^= in64[i];
+        st[i] = in64[i];
     }
+    st[5] = 0x0000000000000001;
+    st[6] = 0x0000000000000000;
+    st[7] = 0x0000000000000000;
+    st[8] = 0x8000000000000000;
+    for(int i=9 ; i<25 ; i++)
+    {
+        st[i] = 0;
+    }
+
     keccakf(st,KECCAKF_ROUNDS-1);
     keccak_final512(st);
     
-    for(size_t i=0 ; i<64 ; i++)
+    for(int i=0 ; i<8 ; i++)
     {
-        ret[i] = a[i];
+        out64[i] = st[i];
     }
 }
 
