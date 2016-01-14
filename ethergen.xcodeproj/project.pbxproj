@@ -37,7 +37,7 @@
 		141BB6D41C3830CE004E0175 /* ethergen */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = ethergen; sourceTree = BUILT_PRODUCTS_DIR; };
 		145C04701C47FCDE00299912 /* cl */ = {isa = PBXFileReference; lastKnownFileType = folder; name = cl; path = includes/cl; sourceTree = "<group>"; };
 		145C04711C47FCEB00299912 /* gpuworker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = gpuworker.h; path = includes/gpuworker.h; sourceTree = "<group>"; };
-		145C04721C47FCFD00299912 /* gpuworker.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gpuworker.cpp; sourceTree = "<group>"; };
+		145C04721C47FCFD00299912 /* gpuworker.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = gpuworker.cpp; path = src/gpuworker.cpp; sourceTree = SOURCE_ROOT; };
 		147CD0681C465836003AF08D /* OpenCL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = OpenCL.framework; sourceTree = "<group>"; };
 		14B185771C3DB65E005D5C15 /* miner.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = miner.hpp; path = includes/miner.hpp; sourceTree = SOURCE_ROOT; };
 		14B185781C3DB65E005D5C15 /* connection.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = connection.hpp; path = includes/connection.hpp; sourceTree = SOURCE_ROOT; };
