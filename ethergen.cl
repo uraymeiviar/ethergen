@@ -12,11 +12,6 @@ static uint fnv(uint x, uint y)
     return x * FNV_PRIME ^ y;
 }
 
-static uint4 fnv4(uint4 x, uint4 y)
-{
-    return x * FNV_PRIME ^ y;
-}
-
 static uint fnv_reduce(uint4 v)
 {
     return fnv(fnv(fnv(v.x, v.y), v.z), v.w);
@@ -153,7 +148,7 @@ static void keccak_final512(uint2* st)
     st[0] ^= RC[23];
 }
 
-static void keccak_round(uint2* st, int round)
+static void keccak_round(uint2* st, uint round)
 {
     uint2* ps = &st[25];
     
@@ -259,7 +254,7 @@ static void keccak_round(uint2* st, int round)
     }
 }
 
-static void SHA3_96B_256(ulong* output, ulong const* input)
+static void SHA3_96B_256(__global ulong* output, __global ulong const* input)
 {
     ulong st[50];
     for(int i=0 ; i<12 ; i++)
@@ -275,13 +270,13 @@ static void SHA3_96B_256(ulong* output, ulong const* input)
     {
         st[i] = 0;
     }
-    keccak_round(st,KECCAK_ROUNDS-1);
-    keccak_final256(st);
+    keccak_round((uint2*)st,KECCAK_ROUNDS-1);
+    keccak_final256((uint2*)st);
     
-    COPY(putput,input,4);
+    COPY(output,input,4);
 }
 
-static void SHA3_40B_512(ulong* buffer)
+static void SHA3_40B_512(__global ulong* buffer)
 {
     ulong st[50];
     
@@ -298,8 +293,8 @@ static void SHA3_40B_512(ulong* buffer)
         st[i] = 0;
     }
 
-    keccak_round(st,KECCAK_ROUNDS-1);
-    keccak_final512(st);
+    keccak_round((uint2*)st,KECCAK_ROUNDS-1);
+    keccak_final512((uint2*)st);
     
     COPY(buffer,st,8);
 }
@@ -317,7 +312,7 @@ __kernel void prehash(
 {
     uint const gid = get_global_id(0);
     ulong nonce = startNonce + gid;
-    ulong* buffer = (ulong*)(hashpad+(4*gid));
+    __global ulong* buffer = (__global ulong*)(hashpad+(4*gid));
     COPY(buffer,header->u32,8);
     buffer[8]  = nonce;
     buffer[56] = nonce;
@@ -334,52 +329,52 @@ __kernel void finalhash(
         __constant bits256 const* target)
 {
     uint const gid = get_global_id(0);
-    ulong*  buffer = (ulong*) (hashpad+(4*gid)  );
-    uint4*  mixSrc = (uint4*) (hashpad+(4*gid)+1);
-    uint*   mixDst = (uint*)  (hashpad+(4*gid)+1);
-    ulong4* flag   = (ulong4*)(hashpad+(4*gid)+2);
-    ulong*  dest   = (ulong*) (hashpad+(4*gid)+3);
-    ulong4* hash   = (ulong4*)(hashpad+(4*gid)+3);
+    __global ulong*  buffer = (__global ulong*) (hashpad+(4*gid)  );
+    __global uint4*  mixSrc = (__global uint4*) (hashpad+(4*gid)+1);
+    __global uint*   mixDst = (__global uint*)  (hashpad+(4*gid)+1);
+    __global ulong4* flag   = (__global ulong4*)(hashpad+(4*gid)+2);
+    __global ulong*  dest   = (__global ulong*) (hashpad+(4*gid)+3);
+    __global ulong4* hash   = (__global ulong4*)(hashpad+(4*gid)+3);
     for(uint i=0 ; i<8 ; i++)
     {
         mixDst[i] = fnv_reduce(mixSrc[i]);
     }
     SHA3_96B_256(dest,buffer);
 
-    if(target.u64[0] < hash.s0)
+    if(target->u64[0] < hash->s0)
     {
-        flag.s0 = 0;
+        flag->s0 = 0;
     }
-    else if(target.u64[0] > hash.s0)
+    else if(target->u64[0] > hash->s0)
     {
-        flag.s0 = 1;
+        flag->s0 = 1;
     }
     else{
-        if(target.u64[1] < hash.s1)
+        if(target->u64[1] < hash->s1)
         {
-            flag.s0 = 0;
+            flag->s0 = 0;
         }
-        else if(target.u64[0] > hash.s0)
+        else if(target->u64[0] > hash->s0)
         {
-            flag.s0 = 1;
+            flag->s0 = 1;
         }
         else{
-            if(target.u64[2] < hash.s2)
+            if(target->u64[2] < hash->s2)
             {
-                flag.s0 = 0;
+                flag->s0 = 0;
             }
-            else if(target.u64[0] > hash.s0)
+            else if(target->u64[0] > hash->s0)
             {
-                flag.s0 = 1;
+                flag->s0 = 1;
             }
             else{
-                if(target.u64[2] < hash.s2)
+                if(target->u64[2] < hash->s2)
                 {
-                    flag.s0 = 0;
+                    flag->s0 = 0;
                 }
-                else if(target.u64[0] >= hash.s0)
+                else if(target->u64[0] >= hash->s0)
                 {
-                    flag.s0 = 1;
+                    flag->s0 = 1;
                 }
             }
         }

@@ -23,6 +23,7 @@ std::map<std::string,ConnectionFactory*> connectionFactoryMap;
 void initFactories()
 {
     workerFactoryMap["cpu"] = &CpuWorker::getFactory();
+    workerFactoryMap["gpu"] = &GpuWorker::getFactory();
     connectionFactoryMap["getwork"] = &PoolConnection::getFactory();
 }
 
@@ -148,30 +149,7 @@ void openclInfo(int argc, const char* argv[])
             deviceInfo.device = d;
             if(ClDeviceInfo::getInfo(deviceInfo))
             {
-                std::string endian = "Endian:L";
-                if(!deviceInfo.endianLittle)
-                {
-                    endian = "Endian:B";
-                }
-                std::string wiSize = std::to_string(deviceInfo.maxWorkItemSize[0]);
-                for(size_t w = 1 ; w<deviceInfo.maxWorkItemSize.size() ; w++)
-                {
-                    wiSize += "x"+std::to_string(deviceInfo.maxWorkItemSize[w]);
-                }
-                std::cout << deviceInfo.platform << ":" << deviceInfo.device << " " << deviceInfo.name << " ( " << ClDeviceInfo::deviceTypeToString(deviceInfo.type) << ") " << deviceInfo.version << "/ SW." << deviceInfo.driverVersion << " " << deviceInfo.vendor << " (0x" << std::hex << deviceInfo.vendorId << ") " << endian << std::endl;
-                
-                std::cout << "  GMemSize: " << std::to_string(deviceInfo.globalMemorySize/(1024*1024)) << "MB" <<
-                "  GCacheSize: " << std::to_string(deviceInfo.globalMemoryCacheSize) <<
-                "  GCacheLine: " << std::to_string(deviceInfo.globalMemoryCacheLineSize/1024) << "KB" <<
-                "  LMemSize: " << std::to_string(deviceInfo.localMemorySize/1024) << "KB" << std::endl;
-                
-                std::cout << "  MaxClock: " << std::to_string(deviceInfo.maxClock) << "MHz" <<
-                "  MaxCU: " << std::to_string(deviceInfo.maxComputeUnit) <<
-                "  MaxConst: " << std::to_string(deviceInfo.maxConstant) << "x" << std::to_string(deviceInfo.maxConstantBufferSize/1024) << "KB" <<
-                "  MaxAlloc: " << std::to_string(deviceInfo.maxMemoryAllocSize/(1024*1024)) << "MB" << std::endl;
-                std::cout << "  MaxParamSize: " << std::to_string(deviceInfo.maxParameterSize) <<
-                "  MaxWGSize: " << std::to_string(deviceInfo.maxWorkGroupSize) <<
-                "  MaxWISize: " << wiSize << std::endl << std::endl;
+                deviceInfo.printInfo();
             }
         }
     }
@@ -288,7 +266,7 @@ void gen(int argc, const char* argv[])
                             std::this_thread::sleep_for(std::chrono::seconds(1));
                             uint64_t noncePerSec = miner.getCurrentHashrate();
                             Bits<256> bestResult = miner.getBestResult();
-                            std::cout << "best result " << bestResult.toString() << " " << noncePerSec << " nonces/sec" << std::endl;
+                            std::cout << "best result " << bestResult.toString() << " " << std::to_string(noncePerSec) << " nonces/sec" << std::endl;
                             miner.update();
                         }
                     }

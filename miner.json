@@ -1,0 +1,30 @@
+{
+	"workers":[
+		{
+			"name":"ethergen-cpu",
+			"type":"cpu",
+			"params":{
+				"threads":2
+			},
+			"connection":{
+				"type":"getwork",
+				"account":"0xa3dcbf914ad920af9aee3ffcd642ec18f0fb80b3",
+				"endpoint":"http://sg.node.etherlink.co/<account>/<worker>"
+			}
+		},
+		{
+			"name":"ethergen-gpu",
+			"type":"gpu",
+			"params":{
+				"worksize":4096,
+				"deviceid":"0x1022700",
+				"kernel":"ethergen.cl"
+			},
+			"connection":{
+				"type":"getwork",
+				"account":"0x73dcbf914ad920af9aee3ffcd642ec18f0fb80b3",
+				"endpoint":"http://sg.node.etherlink.co/<account>/<worker>"
+			}
+		}
+	]
+}
