@@ -153,11 +153,101 @@ static void keccakf_sse(uint64_t st[32])
 }
 */
 
-static void keccakf(uint64_t* st)
+static void keccak_final256(uint64_t* st)
+{
+    uint64_t* pst = &st[25];
+
+    pst[0] = st[0] ^ st[0 + 5] ^ st[0 + 10] ^ st[0 + 15] ^ st[0 + 20];
+    pst[1] = st[1] ^ st[1 + 5] ^ st[1 + 10] ^ st[1 + 15] ^ st[1 + 20];
+    pst[2] = st[2] ^ st[2 + 5] ^ st[2 + 10] ^ st[2 + 15] ^ st[2 + 20];
+    pst[3] = st[3] ^ st[3 + 5] ^ st[3 + 10] ^ st[3 + 15] ^ st[3 + 20];
+    pst[4] = st[4] ^ st[4 + 5] ^ st[4 + 10] ^ st[4 + 15] ^ st[4 + 20];
+    
+    pst[5] = pst[4] ^ ROTL64(pst[1], 1);
+    pst[6] = pst[0] ^ ROTL64(pst[2], 1);
+    pst[7] = pst[1] ^ ROTL64(pst[3], 1);
+    pst[8] = pst[2] ^ ROTL64(pst[4], 1);
+    pst[9] = pst[3] ^ ROTL64(pst[0], 1);
+    
+    st[ 0+0] ^= pst[5];
+    st[ 5+1] ^= pst[6];
+    st[10+2] ^= pst[7];
+    st[15+3] ^= pst[8];
+    st[20+4] ^= pst[9];
+    
+    // Rho Pi
+    pst[ 0] = st[ 0];
+    pst[ 3] = ROTL64(st[18], 21);
+    pst[ 4] = ROTL64(st[24], 14);
+    pst[ 2] = ROTL64(st[12], 43);
+    pst[ 1] = ROTL64(st[ 6], 44);
+    
+    st[ 0] = pst[ 0] ^ (~pst[ 0 + 1]) & pst[ 0 + 2];
+    st[ 1] = pst[ 1] ^ (~pst[ 0 + 2]) & pst[ 0 + 3];
+    st[ 2] = pst[ 2] ^ (~pst[ 0 + 3]) & pst[ 0 + 4];
+    st[ 3] = pst[ 3] ^ (~pst[ 0 + 4]) & pst[ 0 + 0];
+    
+    //  Iota
+    st[0] ^= 0x8000000080008008;
+}
+
+static void keccak_final512(uint64_t* st)
 {
     uint64_t* pst = &st[25];
     
-    for (int r = 0; r < KECCAKF_ROUNDS; r++)
+    pst[0] = st[0] ^ st[0 + 5] ^ st[0 + 10] ^ st[0 + 15] ^ st[0 + 20];
+    pst[1] = st[1] ^ st[1 + 5] ^ st[1 + 10] ^ st[1 + 15] ^ st[1 + 20];
+    pst[2] = st[2] ^ st[2 + 5] ^ st[2 + 10] ^ st[2 + 15] ^ st[2 + 20];
+    pst[3] = st[3] ^ st[3 + 5] ^ st[3 + 10] ^ st[3 + 15] ^ st[3 + 20];
+    pst[4] = st[4] ^ st[4 + 5] ^ st[4 + 10] ^ st[4 + 15] ^ st[4 + 20];
+    
+    pst[5] = pst[4] ^ ROTL64(pst[1], 1);
+    pst[6] = pst[0] ^ ROTL64(pst[2], 1);
+    pst[7] = pst[1] ^ ROTL64(pst[3], 1);
+    pst[8] = pst[2] ^ ROTL64(pst[4], 1);
+    pst[9] = pst[3] ^ ROTL64(pst[0], 1);
+    
+    st[ 0+0] ^= pst[5];
+    st[ 0+3] ^= pst[8];
+    st[ 5+1] ^= pst[6];
+    st[ 5+4] ^= pst[9];
+    st[10+0] ^= pst[5];
+    st[10+2] ^= pst[7];
+    st[15+1] ^= pst[6];
+    st[15+3] ^= pst[8];
+    st[20+2] ^= pst[7];
+    st[20+4] ^= pst[9];
+    
+    // Rho Pi
+    pst[ 0] = st[ 0];
+    pst[ 7] = ROTL64(st[10],  3);
+    pst[ 3] = ROTL64(st[18], 21);
+    pst[ 5] = ROTL64(st[ 3], 28);
+    pst[ 8] = ROTL64(st[16], 45);
+    pst[ 4] = ROTL64(st[24], 14);
+    pst[ 2] = ROTL64(st[12], 43);
+    pst[ 9] = ROTL64(st[22], 61);
+    pst[ 6] = ROTL64(st[ 9], 20);
+    pst[ 1] = ROTL64(st[ 6], 44);
+    
+    st[ 0] = pst[ 0] ^ (~pst[ 0 + 1]) & pst[ 0 + 2];
+    st[ 1] = pst[ 1] ^ (~pst[ 0 + 2]) & pst[ 0 + 3];
+    st[ 2] = pst[ 2] ^ (~pst[ 0 + 3]) & pst[ 0 + 4];
+    st[ 3] = pst[ 3] ^ (~pst[ 0 + 4]) & pst[ 0 + 0];
+    st[ 4] = pst[ 4] ^ (~pst[ 0 + 0]) & pst[ 0 + 1];
+    st[ 5] = pst[ 5] ^ (~pst[ 5 + 1]) & pst[ 5 + 2];
+    st[ 6] = pst[ 6] ^ (~pst[ 5 + 2]) & pst[ 5 + 3];
+    st[ 7] = pst[ 7] ^ (~pst[ 5 + 3]) & pst[ 5 + 4];
+    
+    //  Iota
+    st[0] ^= 0x8000000080008008;
+}
+
+static void keccakf(uint64_t* st, int round)
+{
+    uint64_t* pst = &st[25];
+    
+    for (int r = 0; r < round; r++)
     {
         pst[0] = st[0] ^ st[0 + 5] ^ st[0 + 10] ^ st[0 + 15] ^ st[0 + 20];
         pst[1] = st[1] ^ st[1 + 5] ^ st[1 + 10] ^ st[1 + 15] ^ st[1 + 20];
@@ -277,7 +367,7 @@ static inline void hash(uint8_t* out, size_t outlen,
         {
             st[i] ^= in64[i];
         }
-        keccakf(st);
+        keccakf(st,KECCAKF_ROUNDS);
         in += rate;
         inlen -= rate;
     }
@@ -288,7 +378,7 @@ static inline void hash(uint8_t* out, size_t outlen,
     {
         st[i] ^= in64[i];
     }
-    keccakf(st);
+    keccakf(st,KECCAKF_ROUNDS);
     
     while (outlen >= rate)
     {
@@ -296,7 +386,7 @@ static inline void hash(uint8_t* out, size_t outlen,
         {
             a[i] = in[i];
         }
-        keccakf(st);
+        keccakf(st,KECCAKF_ROUNDS);
         out += rate;
         outlen -= rate;
     }
@@ -304,6 +394,48 @@ static inline void hash(uint8_t* out, size_t outlen,
     for(size_t i=0 ; i<outlen ; i++)
     {
         out[i] = a[i];
+    }
+}
+
+static inline void SHA3_96B_256(uint8_t* ret, uint8_t const* data)
+{
+    alignas(8) uint64_t st[50] = {0};
+    uint8_t* a = (uint8_t*)st;
+    const uint64_t* in64 = (const uint64_t*)data;
+    
+    a[96] ^= 0x01;
+    a[135] ^= 0x80;
+    for(size_t i=0 ; i<96/8 ; i++)
+    {
+        st[i] ^= in64[i];
+    }
+    keccakf(st,KECCAKF_ROUNDS-1);
+    keccak_final256(st);
+    
+    for(size_t i=0 ; i<32 ; i++)
+    {
+        ret[i] = a[i];
+    }
+}
+
+static inline void SHA3_40B_512(uint8_t* ret, uint8_t const* data)
+{
+    alignas(8) uint64_t st[50] = {0};
+    uint8_t* a = (uint8_t*)st;
+    const uint64_t* in64 = (const uint64_t*)data;
+    
+    a[40] ^= 0x01;
+    a[71] ^= 0x80;
+    for(size_t i=0 ; i<40/8 ; i++)
+    {
+        st[i] ^= in64[i];
+    }
+    keccakf(st,KECCAKF_ROUNDS-1);
+    keccak_final512(st);
+    
+    for(size_t i=0 ; i<64 ; i++)
+    {
+        ret[i] = a[i];
     }
 }
 
