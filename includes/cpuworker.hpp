@@ -6,7 +6,7 @@
 #include <atomic>
 #include "sha3.hpp"
 
-class HashPad
+class alignas(64) HashPad
 {
 public:
     inline void init(uint64_t nonce,const Bits<256>& headerHash)
@@ -33,19 +33,21 @@ public:
     }
     inline uint32_t fnv(uint32_t a, uint32_t b)
     {
-        return (a + (a<<1) + (a<<4) + (a<<7) + (a<<8) + (a<<24)) ^ b;
+        //return (a + (a<<1) + (a<<4) + (a<<7) + (a<<8) + (a<<24)) ^ b;
+        return (a*0x01000193) ^ b;
     }
     inline void hash(const std::shared_ptr<WorkGraph> workgraph)
     {
+        SHA3_512(this->smix[0].ptr(), this->smix[0].ptr(), 40);
+        for(int i=0 ; i<8 ; i++)
+        {
+            *this->smix[1].ptr64(i) = *this->smix[0].ptr64(i);
+            *this->smix[2].ptr64(i) = *this->smix[0].ptr64(i);
+        }
+        
         const uint32_t numPages = (uint32_t)(workgraph->getDAGByteLength() / 128);
         const Bytes<64>* dag = workgraph->getDAG();
         uint32_t* mix = (uint32_t*)smix[1].ptr();
-        
-        SHA3_512(this->smix[0].ptr(), this->smix[0].ptr(), 40);
-        
-        memcpy(this->smix[1].ptr(), this->smix[0].ptr(), 64);
-        memcpy(this->smix[2].ptr(), this->smix[0].ptr(), 64);
-        
         for (uint32_t i = 0; i != 64; ++i)
         {
             uint32_t index = fnv(smix[0].value32(0)^i, mix[i % 32]) % numPages;
@@ -66,7 +68,7 @@ public:
         
         SHA3_256(smix[3].ptr(), smix[0].ptr(), 64 + 32);
     }
-    std::array<Bytes<64>,4> smix;
+    Bytes<64> smix[4];
 };
 
 class CpuWorkerFactory : public WorkerFactory
@@ -75,7 +77,7 @@ public:
     virtual std::unique_ptr<Worker> create(std::string name) override;
 };
 
-class CpuWorker : public Worker
+class alignas(64)  CpuWorker : public Worker
 {
 public:
     void setWork(const Work& work, uint64_t startNonce ) override;
