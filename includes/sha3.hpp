@@ -163,17 +163,11 @@ static void keccak_final256(uint64_t* st)
     pst[3] = st[3] ^ st[3 + 5] ^ st[3 + 10] ^ st[3 + 15] ^ st[3 + 20];
     pst[4] = st[4] ^ st[4 + 5] ^ st[4 + 10] ^ st[4 + 15] ^ st[4 + 20];
     
-    pst[5] = pst[4] ^ ROTL64(pst[1], 1);
-    pst[6] = pst[0] ^ ROTL64(pst[2], 1);
-    pst[7] = pst[1] ^ ROTL64(pst[3], 1);
-    pst[8] = pst[2] ^ ROTL64(pst[4], 1);
-    pst[9] = pst[3] ^ ROTL64(pst[0], 1);
-    
-    st[ 0+0] ^= pst[5];
-    st[ 5+1] ^= pst[6];
-    st[10+2] ^= pst[7];
-    st[15+3] ^= pst[8];
-    st[20+4] ^= pst[9];
+    st[ 0+0] ^= (pst[4] ^ ROTL64(pst[1], 1));
+    st[ 5+1] ^= (pst[0] ^ ROTL64(pst[2], 1));
+    st[10+2] ^= (pst[1] ^ ROTL64(pst[3], 1));
+    st[15+3] ^= (pst[2] ^ ROTL64(pst[4], 1));
+    st[20+4] ^= (pst[3] ^ ROTL64(pst[0], 1));
     
     // Rho Pi
     pst[ 0] = st[ 0];
