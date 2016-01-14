@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		147CD0661C46461D003AF08D /* gpuworker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 147CD0651C46461D003AF08D /* gpuworker.cpp */; };
 		147CD0691C465836003AF08D /* OpenCL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 147CD0681C465836003AF08D /* OpenCL.framework */; };
 		14B185921C3DB689005D5C15 /* worker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14B1858C1C3DB689005D5C15 /* worker.cpp */; };
 		14B185931C3DB689005D5C15 /* work.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14B1858D1C3DB689005D5C15 /* work.cpp */; };
@@ -35,9 +34,6 @@
 
 /* Begin PBXFileReference section */
 		141BB6D41C3830CE004E0175 /* ethergen */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = ethergen; sourceTree = BUILT_PRODUCTS_DIR; };
-		147CD0641C464496003AF08D /* cl */ = {isa = PBXFileReference; lastKnownFileType = folder; name = cl; path = includes/cl; sourceTree = "<group>"; };
-		147CD0651C46461D003AF08D /* gpuworker.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = gpuworker.cpp; path = src/gpuworker.cpp; sourceTree = SOURCE_ROOT; };
-		147CD0671C46463B003AF08D /* gpuworker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = gpuworker.h; path = includes/gpuworker.h; sourceTree = "<group>"; };
 		147CD0681C465836003AF08D /* OpenCL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = OpenCL.framework; sourceTree = "<group>"; };
 		14B185771C3DB65E005D5C15 /* miner.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = miner.hpp; path = includes/miner.hpp; sourceTree = SOURCE_ROOT; };
 		14B185781C3DB65E005D5C15 /* connection.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = connection.hpp; path = includes/connection.hpp; sourceTree = SOURCE_ROOT; };
@@ -107,7 +103,6 @@
 				14C4A96B1C4291D7001BED47 /* poolconnection.cpp */,
 				14C4A96E1C42A471001BED47 /* httpclient.cpp */,
 				14C4A9721C42F9C3001BED47 /* workgraph.cpp */,
-				147CD0651C46461D003AF08D /* gpuworker.cpp */,
 			);
 			name = src;
 			path = ethergen;
@@ -116,7 +111,6 @@
 		14B185691C3DB200005D5C15 /* includes */ = {
 			isa = PBXGroup;
 			children = (
-				147CD0641C464496003AF08D /* cl */,
 				14C4A94C1C4141C0001BED47 /* rapidjson */,
 				14B185771C3DB65E005D5C15 /* miner.hpp */,
 				14B185781C3DB65E005D5C15 /* connection.hpp */,
@@ -130,7 +124,6 @@
 				14C4A96D1C4291F4001BED47 /* poolconnection.h */,
 				14C4A9701C42A483001BED47 /* httpclient.h */,
 				14C4A9711C42F9B1001BED47 /* workgraph.hpp */,
-				147CD0671C46463B003AF08D /* gpuworker.h */,
 			);
 			name = includes;
 			sourceTree = "<group>";
@@ -195,7 +188,6 @@
 				14C4A96F1C42A471001BED47 /* httpclient.cpp in Sources */,
 				14B185931C3DB689005D5C15 /* work.cpp in Sources */,
 				14B185921C3DB689005D5C15 /* worker.cpp in Sources */,
-				147CD0661C46461D003AF08D /* gpuworker.cpp in Sources */,
 				14B185951C3DB689005D5C15 /* main.cpp in Sources */,
 				14C4A9731C42F9C3001BED47 /* workgraph.cpp in Sources */,
 				14B185941C3DB689005D5C15 /* block.cpp in Sources */,
