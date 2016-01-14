@@ -69,7 +69,7 @@ public:
     }
     void copyFrom(const uint8_t* data)
     {
-        memcpy((char*)this->bytes.data(),(char*)data,T/8);
+        memcpy((char*)this->bytes.data(),(char*)data,this->byteSize());
     }
     
     uint8_t* ptr(size_t offset = 0) {return ((uint8_t*)this->bytes.data())+offset;};

@@ -2,3 +2,5 @@ DerivedData
 .DS_Store
 ethergen.xcodeproj/project.xcworkspace/xcuserdata
 ethergen.xcodeproj/xcuserdata
+*.o
+ethergen

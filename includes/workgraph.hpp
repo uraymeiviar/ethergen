@@ -2,6 +2,7 @@
 #define workgraph_h
 #include "block.hpp"
 #include <map>
+#include <memory>
 #include <vector>
 #include "bits.hpp"
 

@@ -1,6 +1,7 @@
 #ifndef httpclient_h
 #define httpclient_h
 #include <string>
+#include <cstring>
 #include <netinet/in.h>
 #include <map>
 #include <mutex>

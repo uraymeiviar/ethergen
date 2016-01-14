@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		147CD0631C446BA5003AF08D /* sha3.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 147CD0621C446BA5003AF08D /* sha3.cpp */; };
 		14B185921C3DB689005D5C15 /* worker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14B1858C1C3DB689005D5C15 /* worker.cpp */; };
 		14B185931C3DB689005D5C15 /* work.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14B1858D1C3DB689005D5C15 /* work.cpp */; };
 		14B185941C3DB689005D5C15 /* block.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 14B1858E1C3DB689005D5C15 /* block.cpp */; };
@@ -34,7 +33,6 @@
 
 /* Begin PBXFileReference section */
 		141BB6D41C3830CE004E0175 /* ethergen */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = ethergen; sourceTree = BUILT_PRODUCTS_DIR; };
-		147CD0621C446BA5003AF08D /* sha3.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = sha3.cpp; path = src/sha3.cpp; sourceTree = SOURCE_ROOT; };
 		14B185771C3DB65E005D5C15 /* miner.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = miner.hpp; path = includes/miner.hpp; sourceTree = SOURCE_ROOT; };
 		14B185781C3DB65E005D5C15 /* connection.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = connection.hpp; path = includes/connection.hpp; sourceTree = SOURCE_ROOT; };
 		14B185791C3DB65E005D5C15 /* work.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = work.hpp; path = includes/work.hpp; sourceTree = SOURCE_ROOT; };
@@ -91,7 +89,6 @@
 		141BB6D61C3830CE004E0175 /* src */ = {
 			isa = PBXGroup;
 			children = (
-				147CD0621C446BA5003AF08D /* sha3.cpp */,
 				14B1858C1C3DB689005D5C15 /* worker.cpp */,
 				14B1858D1C3DB689005D5C15 /* work.cpp */,
 				14B1858E1C3DB689005D5C15 /* block.cpp */,
@@ -185,7 +182,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				14C4A96F1C42A471001BED47 /* httpclient.cpp in Sources */,
-				147CD0631C446BA5003AF08D /* sha3.cpp in Sources */,
 				14B185931C3DB689005D5C15 /* work.cpp in Sources */,
 				14B185921C3DB689005D5C15 /* worker.cpp in Sources */,
 				14B185951C3DB689005D5C15 /* main.cpp in Sources */,

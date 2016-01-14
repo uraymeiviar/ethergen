@@ -27,14 +27,14 @@ void initFactories()
 void printUsage(const char* cmd)
 {
     std::cout << "ETHERGEN " << version.c_str() << std::endl;
-    std::cout << "usage  " << cmd << " <mode>" << std::endl;
-    std::cout << "mode               | parameters " << std::endl;
-    std::cout << "     calc-dag-node   <block-number>" << std::endl;
-    std::cout << "     calc-dag        <block-number>" << std::endl;
-    std::cout << "     hash            <block-number> <nonce> <headerhash> [target]" << std::endl;
-    std::cout << "     benchmark       <cpu|gpu> <threads>" << std::endl;
-    std::cout << "     gen             <config-file>" << std::endl;
-    std::cout << "     help" << std::endl;
+    std::cout << "usage \"" << cmd << " <mode>\"" << std::endl;
+    std::cout << "mode :" << std::endl;
+    std::cout << "     calc-dag-node <block-number>" << std::endl;
+    std::cout << "          calc-dag <block-number>" << std::endl;
+    std::cout << "              hash <block-number> <nonce> <headerhash> [target]" << std::endl;
+    std::cout << "         benchmark <cpu|gpu> <threads>" << std::endl;
+    std::cout << "               gen <config-file>" << std::endl;
+    std::cout << "              help" << std::endl;
     std::cout << std::endl;
 }
 

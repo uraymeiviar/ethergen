@@ -4,6 +4,7 @@
 #include "worker.hpp"
 #include <thread>
 #include <atomic>
+#include <mutex>
 #include "sha3.hpp"
 
 class alignas(64) HashPad
